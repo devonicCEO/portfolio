@@ -32,7 +32,7 @@ Modern and minimalist portfolio website showcasing skills, projects, and contact
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/YOUR_USERNAME/portfolio.git
+   git clone https://github.com/devonicCEO/portfolio.git
    cd portfolio
    ```
 
@@ -120,7 +120,7 @@ Yetenekleri, projeleri ve iletişim bilgilerini sergileyen modern ve minimalist 
 1. **Depoyu klonlayın**
 
    ```bash
-   git clone https://github.com/KULLANICI_ADINIZ/portfolio.git
+   git clone https://github.com/devonicCEO/portfolio.git
    cd portfolio
    ```
 
@@ -208,7 +208,7 @@ MIT Lisansı - [LICENSE](LICENSE) dosyasına bakın
 1. **Клонируйте репозиторий**
 
    ```bash
-   git clone https://github.com/ВАШ_ПОЛЬЗОВАТЕЛЬ/portfolio.git
+   git clone https://github.com/devonicCEO/portfolio.git
    cd portfolio
    ```
 
