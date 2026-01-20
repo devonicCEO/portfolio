@@ -51,6 +51,14 @@
                 <i class="fas fa-code"></i>
                 <span>Skills</span>
             </a>
+            <a href="#visitors" class="nav-item" data-page="visitors">
+                <i class="fas fa-eye"></i>
+                <span>Ziyaretçiler</span>
+            </a>
+            <a href="#messages" class="nav-item" data-page="messages">
+                <i class="fas fa-envelope"></i>
+                <span>Mesajlar</span>
+            </a>
         </nav>
 
         <div class="sidebar-footer">
@@ -107,8 +115,8 @@
                         <i class="fas fa-eye"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>-</h3>
-                        <p>Ziyaretçiler</p>
+                        <h3 id="todayVisitors">0</h3>
+                        <p>Bugün Ziyaretçi</p>
                     </div>
                 </div>
 
@@ -117,8 +125,8 @@
                         <i class="fas fa-envelope"></i>
                     </div>
                     <div class="stat-info">
-                        <h3>-</h3>
-                        <p>Mesajlar</p>
+                        <h3 id="totalMessages">0</h3>
+                        <p>Toplam Mesaj</p>
                     </div>
                 </div>
             </div>
@@ -159,6 +167,107 @@
 
             <div id="skillsList" class="skills-grid">
                 <!-- Skills will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Visitors Page -->
+        <section id="visitors-page" class="page">
+            <div class="page-header">
+                <h2>Ziyaretçi İstatistikleri</h2>
+            </div>
+
+            <div class="stats-container">
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <i class="fas fa-calendar-day"></i>
+                        <h3>Günlük Ziyaretçiler</h3>
+                    </div>
+                    <div class="stats-card-body">
+                        <div class="stat-item">
+                            <span>Bugün:</span>
+                            <strong id="visitorToday">0</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Dün:</span>
+                            <strong id="visitorYesterday">0</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <i class="fas fa-calendar-week"></i>
+                        <h3>Haftalık Ziyaretçiler</h3>
+                    </div>
+                    <div class="stats-card-body">
+                        <div class="stat-item">
+                            <span>Bu Hafta:</span>
+                            <strong id="visitorThisWeek">0</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Geçen Hafta:</span>
+                            <strong id="visitorLastWeek">0</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Aylık Ziyaretçiler</h3>
+                    </div>
+                    <div class="stats-card-body">
+                        <div class="stat-item">
+                            <span>Bu Ay:</span>
+                            <strong id="visitorThisMonth">0</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Geçen Ay:</span>
+                            <strong id="visitorLastMonth">0</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Yıllık Ziyaretçiler</h3>
+                    </div>
+                    <div class="stats-card-body">
+                        <div class="stat-item">
+                            <span>Bu Yıl:</span>
+                            <strong id="visitorThisYear">0</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Geçen Yıl:</span>
+                            <strong id="visitorLastYear">0</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-card full-width">
+                    <div class="stats-card-header">
+                        <i class="fas fa-users"></i>
+                        <h3>Toplam Ziyaretçiler</h3>
+                    </div>
+                    <div class="stats-card-body">
+                        <div class="stat-item">
+                            <span>Tüm Zamanlar:</span>
+                            <strong id="visitorTotal" style="font-size: 2rem; color: #bc13fe">0</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Messages Page -->
+        <section id="messages-page" class="page">
+            <div class="page-header">
+                <h2>İletişim Mesajları</h2>
+            </div>
+
+            <div id="messagesList" class="messages-list">
+                <!-- Messages will be loaded here -->
             </div>
         </section>
     </main>
@@ -415,12 +524,16 @@
                     dashboard: "Dashboard",
                     projects: "Projeler",
                     skills: "Skills",
+                    visitors: "Ziyaretçi İstatistikleri",
+                    messages: "İletişim Mesajları",
                 };
                 document.getElementById("pageTitle").textContent = titles[page];
 
                 // Load data
                 if (page === "projects") loadProjects();
                 if (page === "skills") loadSkills();
+                if (page === "visitors") loadVisitorStats();
+                if (page === "messages") loadMessages();
             });
         });
 
@@ -439,6 +552,178 @@
                 .then((snapshot) => {
                     document.getElementById("skillCount").textContent = snapshot.size;
                 });
+
+            // Load today's visitors
+            const today = new Date().toISOString().split("T")[0];
+            db.collection("site-visitors")
+                .doc("summary")
+                .get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const todayCount = doc.data().daily?.[today] || 0;
+                        document.getElementById("todayVisitors").textContent = todayCount;
+                    }
+                });
+
+            // Load messages count
+            db.collection("contacts")
+                .get()
+                .then((snapshot) => {
+                    document.getElementById("totalMessages").textContent =
+                        snapshot.size;
+                });
+        }
+
+        // Load Visitor Statistics
+        function loadVisitorStats() {
+            db.collection("site-visitors")
+                .doc("summary")
+                .onSnapshot((doc) => {
+                    if (!doc.exists) {
+                        // Veri yoksa 0 göster
+                        document.getElementById("visitorToday").textContent = 0;
+                        document.getElementById("visitorYesterday").textContent = 0;
+                        document.getElementById("visitorThisWeek").textContent = 0;
+                        document.getElementById("visitorLastWeek").textContent = 0;
+                        document.getElementById("visitorThisMonth").textContent = 0;
+                        document.getElementById("visitorLastMonth").textContent = 0;
+                        document.getElementById("visitorThisYear").textContent = 0;
+                        document.getElementById("visitorLastYear").textContent = 0;
+                        document.getElementById("visitorTotal").textContent = 0;
+                        return;
+                    }
+
+                    const data = doc.data();
+                    const now = new Date();
+                    const today = now.toISOString().split("T")[0];
+                    const yesterday = new Date(now.getTime() - 86400000)
+                        .toISOString()
+                        .split("T")[0];
+
+                    // Hafta hesapla
+                    function getWeekNumber(date) {
+                        const d = new Date(
+                            Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+                        );
+                        const dayNum = d.getUTCDay() || 7;
+                        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+                        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+                        return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+                    }
+
+                    const year = now.getFullYear().toString();
+                    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+                    const week = getWeekNumber(now).toString();
+                    const lastWeek = getWeekNumber(
+                        new Date(now.getTime() - 604800000),
+                    ).toString();
+                    const lastMonth =
+                        now.getMonth() === 0
+                            ? "12"
+                            : now.getMonth().toString().padStart(2, "0");
+                    const lastYear = (now.getFullYear() - 1).toString();
+
+                    // Günlük
+                    document.getElementById("visitorToday").textContent =
+                        data.daily?.[today] || 0;
+                    document.getElementById("visitorYesterday").textContent =
+                        data.daily?.[yesterday] || 0;
+
+                    // Haftalık
+                    document.getElementById("visitorThisWeek").textContent =
+                        data.weekly?.[`${year}-W${week}`] || 0;
+                    document.getElementById("visitorLastWeek").textContent =
+                        data.weekly?.[`${year}-W${lastWeek}`] || 0;
+
+                    // Aylık
+                    document.getElementById("visitorThisMonth").textContent =
+                        data.monthly?.[`${year}-${month}`] || 0;
+                    document.getElementById("visitorLastMonth").textContent =
+                        data.monthly?.[`${year}-${lastMonth}`] || 0;
+
+                    // Yıllık
+                    document.getElementById("visitorThisYear").textContent =
+                        data.yearly?.[year] || 0;
+                    document.getElementById("visitorLastYear").textContent =
+                        data.yearly?.[lastYear] || 0;
+
+                    // Toplam
+                    const total = Object.values(data.yearly || {}).reduce(
+                        (a, b) => a + b,
+                        0,
+                    );
+                    document.getElementById("visitorTotal").textContent = total;
+                });
+        }
+
+        // Load Messages
+        function loadMessages() {
+            db.collection("contacts")
+                .orderBy("timestamp", "desc")
+                .onSnapshot((snapshot) => {
+                    const messagesList = document.getElementById("messagesList");
+                    messagesList.innerHTML = "";
+
+                    if (snapshot.empty) {
+                        messagesList.innerHTML =
+                            '<div class="empty-state">Henüz mesaj yok.</div>';
+                        return;
+                    }
+
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const timestamp = data.timestamp
+                            ? new Date(data.timestamp.toDate()).toLocaleString("tr-TR")
+                            : "Tarih Bilinmiyor";
+
+                        const messageCard = document.createElement("div");
+                        messageCard.className = `message-card ${data.read ? "" : "unread"}`;
+                        messageCard.innerHTML = `
+                            <div class="message-header">
+                                <div>
+                                    <h3>${data.name}</h3>
+                                    <p>${data.email}</p>
+                                </div>
+                                <div class="message-time">${timestamp}</div>
+                            </div>
+                            <div class="message-body">
+                                <p>${data.message}</p>
+                            </div>
+                            <div class="message-actions">
+                                <button onclick="markMessageAsRead('${doc.id}')" class="btn-small">
+                                    <i class="fas fa-check"></i> Okundu İşaretle
+                                </button>
+                                <button onclick="deleteMessage('${doc.id}')" class="btn-small btn-danger">
+                                    <i class="fas fa-trash"></i> Sil
+                                </button>
+                            </div>
+                        `;
+                        messagesList.appendChild(messageCard);
+                    });
+                });
+        }
+
+        // Mark message as read
+        function markMessageAsRead(id) {
+            db.collection("contacts")
+                .doc(id)
+                .update({ read: true })
+                .then(() => {
+                    console.log("Mesaj okundu olarak işaretlendi");
+                })
+                .catch((err) => console.error("Hata:", err));
+        }
+
+        // Delete message
+        function deleteMessage(id) {
+            if (!confirm("Bu mesajı silmek istediğinize emin misiniz?")) return;
+            db.collection("contacts")
+                .doc(id)
+                .delete()
+                .then(() => {
+                    console.log("Mesaj silindi");
+                })
+                .catch((err) => console.error("Hata:", err));
         }
 
         // Projects Functions
