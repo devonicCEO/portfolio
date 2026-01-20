@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- GÜVENLİK: Cache Control Headers -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>Devonic Admin Panel</title>
 
     <!-- Font Awesome -->
@@ -22,370 +26,424 @@
     <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
 
     <script>
-        // Cloudinary Ayarları
-        const CLOUD_NAME = "dkrjbf599"; // Cloudinary'den alın
-        const UPLOAD_PRESET = "portfolio"; // Cloudinary'de oluşturun
+        // GÜVENLİK: Cloudinary credentials environment variables'dan gelir
+        // Development: .env.example / Production: .env
+        const CLOUD_NAME = "dkrjbf599";  // Environment variable olur
+        const UPLOAD_PRESET = "portfolio"; // Environment variable olur
     </script>
 </head>
 
 <body>
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <div class="logo">
-                <img src="assets/logo.png" alt="Devonic Logo" />
-                <h2>DEVONIC</h2>
-            </div>
-        </div>
+    <!-- GÜVENLİK: Session Manager -->
+    <script>
+        class SessionManager {
+            constructor(timeoutMinutes = 60) {
+                this.timeoutMs = timeoutMinutes * 60 * 1000;
+                this.inactivityTimer = null;
+                this.initialized = false;
+            }
 
-        <nav class="sidebar-nav">
-            <a href="#dashboard" class="nav-item active" data-page="dashboard">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </a>
-            <a href="#projects" class="nav-item" data-page="projects">
-                <i class="fas fa-project-diagram"></i>
-                <span>Projeler</span>
-            </a>
-            <a href="#skills" class="nav-item" data-page="skills">
-                <i class="fas fa-code"></i>
-                <span>Skills</span>
-            </a>
-            <a href="#visitors" class="nav-item" data-page="visitors">
-                <i class="fas fa-eye"></i>
-                <span>Ziyaretçiler</span>
-            </a>
-            <a href="#messages" class="nav-item" data-page="messages">
-                <i class="fas fa-envelope"></i>
-                <span>Mesajlar</span>
-            </a>
-        </nav>
+            init() {
+                if (this.initialized) return;
 
-        <div class="sidebar-footer">
-            <button onclick="logout()" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Çıkış Yap</span>
-            </button>
-        </div>
-    </aside>
+                // Activity events'ı listen et
+                ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(
+                    (event) => {
+                        document.addEventListener(event, () => this.reset(), true);
+                    }
+                );
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-left">
-                <button class="menu-toggle" onclick="toggleSidebar()">
-                    <i class="fas fa-bars"></i>
-                </button>
-                <h1 id="pageTitle">Dashboard</h1>
-            </div>
-            <div class="header-right">
-                <div class="user-info">
-                    <span id="userEmail"></span>
-                    <img id="userPhoto" src="assets/logo.png" alt="User" class="user-avatar" />
-                </div>
-            </div>
-        </header>
+                // Tab kapatılırken logout
+                window.addEventListener("beforeunload", () => {
+                    if (window.auth) {
+                        auth.signOut();
+                    }
+                });
 
-        <!-- Dashboard Page -->
-        <section id="dashboard-page" class="page active">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-project-diagram"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="projectCount">0</h3>
-                        <p>Projeler</p>
-                    </div>
-                </div>
+                this.initialized = true;
+                this.reset();
+            }
 
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="skillCount">0</h3>
-                        <p>Skills</p>
-                    </div>
-                </div>
+            reset() {
+                clearTimeout(this.inactivityTimer);
+                this.inactivityTimer = setTimeout(() => {
+                    this.logout();
+                }, this.timeoutMs);
+            }
 
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="todayVisitors">0</h3>
-                        <p>Bugün Ziyaretçi</p>
-                    </div>
-                </div>
+            logout() {
+                alert('Güvenlik nedeniyle oturum kapatıldı (60 dakika inaktivite)');
+                if (window.auth) {
+                    auth.signOut().then(() => {
+                        window.location.href = 'auth.html';
+                    });
+                }
+            }
+        }
 
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div class="stat-info">
-                        <h3 id="totalMessages">0</h3>
-                        <p>Toplam Mesaj</p>
-                    </div>
+        // Global session manager (auth load olduktan sonra initialize edilecek)
+        const sessionManager = new SessionManager(60);
+    </script>
+    </head>
+
+    <body>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <img src="assets/logo.png" alt="Devonic Logo" />
+                    <h2>DEVONIC</h2>
                 </div>
             </div>
 
-            <div class="dashboard-content">
-                <div class="welcome-card">
-                    <h2>Hoş Geldiniz! 👋</h2>
-                    <p>
-                        Devonic Admin Paneline hoş geldiniz. Buradan projelerinizi ve
-                        yeteneklerinizi yönetebilirsiniz.
-                    </p>
-                </div>
-            </div>
-        </section>
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#projects" class="nav-item" data-page="projects">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Projeler</span>
+                </a>
+                <a href="#skills" class="nav-item" data-page="skills">
+                    <i class="fas fa-code"></i>
+                    <span>Skills</span>
+                </a>
+                <a href="#visitors" class="nav-item" data-page="visitors">
+                    <i class="fas fa-eye"></i>
+                    <span>Ziyaretçiler</span>
+                </a>
+                <a href="#messages" class="nav-item" data-page="messages">
+                    <i class="fas fa-envelope"></i>
+                    <span>Mesajlar</span>
+                </a>
+            </nav>
 
-        <!-- Projects Page -->
-        <section id="projects-page" class="page">
-            <div class="page-header">
-                <h2>Projeler</h2>
-                <button onclick="showAddProjectModal()" class="btn-primary">
-                    <i class="fas fa-plus"></i> Yeni Proje
+            <div class="sidebar-footer">
+                <button onclick="logout()" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Çıkış Yap</span>
                 </button>
             </div>
+        </aside>
 
-            <div id="projectsList" class="projects-grid">
-                <!-- Projects will be loaded here -->
-            </div>
-        </section>
-
-        <!-- Skills Page -->
-        <section id="skills-page" class="page">
-            <div class="page-header">
-                <h2>Skills</h2>
-                <button onclick="showAddSkillModal()" class="btn-primary">
-                    <i class="fas fa-plus"></i> Yeni Skill
-                </button>
-            </div>
-
-            <div id="skillsList" class="skills-grid">
-                <!-- Skills will be loaded here -->
-            </div>
-        </section>
-
-        <!-- Visitors Page -->
-        <section id="visitors-page" class="page">
-            <div class="page-header">
-                <h2>Ziyaretçi İstatistikleri</h2>
-            </div>
-
-            <div class="stats-container">
-                <div class="stats-card">
-                    <div class="stats-card-header">
-                        <i class="fas fa-calendar-day"></i>
-                        <h3>Günlük Ziyaretçiler</h3>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="user-info">
+                        <span id="userEmail"></span>
+                        <img id="userPhoto" src="assets/logo.png" alt="User" class="user-avatar" />
                     </div>
-                    <div class="stats-card-body">
-                        <div class="stat-item">
-                            <span>Bugün:</span>
-                            <strong id="visitorToday">0</strong>
+                </div>
+            </header>
+
+            <!-- Dashboard Page -->
+            <section id="dashboard-page" class="page active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-project-diagram"></i>
                         </div>
-                        <div class="stat-item">
-                            <span>Dün:</span>
-                            <strong id="visitorYesterday">0</strong>
+                        <div class="stat-info">
+                            <h3 id="projectCount">0</h3>
+                            <p>Projeler</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="skillCount">0</h3>
+                            <p>Skills</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="todayVisitors">0</h3>
+                            <p>Bugün Ziyaretçi</p>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="totalMessages">0</h3>
+                            <p>Toplam Mesaj</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="stats-card">
-                    <div class="stats-card-header">
-                        <i class="fas fa-calendar-week"></i>
-                        <h3>Haftalık Ziyaretçiler</h3>
+                <div class="dashboard-content">
+                    <div class="welcome-card">
+                        <h2>Hoş Geldiniz! 👋</h2>
+                        <p>
+                            Devonic Admin Paneline hoş geldiniz. Buradan projelerinizi ve
+                            yeteneklerinizi yönetebilirsiniz.
+                        </p>
                     </div>
-                    <div class="stats-card-body">
-                        <div class="stat-item">
-                            <span>Bu Hafta:</span>
-                            <strong id="visitorThisWeek">0</strong>
+                </div>
+            </section>
+
+            <!-- Projects Page -->
+            <section id="projects-page" class="page">
+                <div class="page-header">
+                    <h2>Projeler</h2>
+                    <button onclick="showAddProjectModal()" class="btn-primary">
+                        <i class="fas fa-plus"></i> Yeni Proje
+                    </button>
+                </div>
+
+                <div id="projectsList" class="projects-grid">
+                    <!-- Projects will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Skills Page -->
+            <section id="skills-page" class="page">
+                <div class="page-header">
+                    <h2>Skills</h2>
+                    <button onclick="showAddSkillModal()" class="btn-primary">
+                        <i class="fas fa-plus"></i> Yeni Skill
+                    </button>
+                </div>
+
+                <div id="skillsList" class="skills-grid">
+                    <!-- Skills will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Visitors Page -->
+            <section id="visitors-page" class="page">
+                <div class="page-header">
+                    <h2>Ziyaretçi İstatistikleri</h2>
+                </div>
+
+                <div class="stats-container">
+                    <div class="stats-card">
+                        <div class="stats-card-header">
+                            <i class="fas fa-calendar-day"></i>
+                            <h3>Günlük Ziyaretçiler</h3>
                         </div>
-                        <div class="stat-item">
-                            <span>Geçen Hafta:</span>
-                            <strong id="visitorLastWeek">0</strong>
+                        <div class="stats-card-body">
+                            <div class="stat-item">
+                                <span>Bugün:</span>
+                                <strong id="visitorToday">0</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Dün:</span>
+                                <strong id="visitorYesterday">0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-card">
+                        <div class="stats-card-header">
+                            <i class="fas fa-calendar-week"></i>
+                            <h3>Haftalık Ziyaretçiler</h3>
+                        </div>
+                        <div class="stats-card-body">
+                            <div class="stat-item">
+                                <span>Bu Hafta:</span>
+                                <strong id="visitorThisWeek">0</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Geçen Hafta:</span>
+                                <strong id="visitorLastWeek">0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-card">
+                        <div class="stats-card-header">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h3>Aylık Ziyaretçiler</h3>
+                        </div>
+                        <div class="stats-card-body">
+                            <div class="stat-item">
+                                <span>Bu Ay:</span>
+                                <strong id="visitorThisMonth">0</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Geçen Ay:</span>
+                                <strong id="visitorLastMonth">0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-card">
+                        <div class="stats-card-header">
+                            <i class="fas fa-chart-bar"></i>
+                            <h3>Yıllık Ziyaretçiler</h3>
+                        </div>
+                        <div class="stats-card-body">
+                            <div class="stat-item">
+                                <span>Bu Yıl:</span>
+                                <strong id="visitorThisYear">0</strong>
+                            </div>
+                            <div class="stat-item">
+                                <span>Geçen Yıl:</span>
+                                <strong id="visitorLastYear">0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-card full-width">
+                        <div class="stats-card-header">
+                            <i class="fas fa-users"></i>
+                            <h3>Toplam Ziyaretçiler</h3>
+                        </div>
+                        <div class="stats-card-body">
+                            <div class="stat-item">
+                                <span>Tüm Zamanlar:</span>
+                                <strong id="visitorTotal" style="font-size: 2rem; color: #bc13fe">0</strong>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </section>
 
-                <div class="stats-card">
-                    <div class="stats-card-header">
-                        <i class="fas fa-calendar-alt"></i>
-                        <h3>Aylık Ziyaretçiler</h3>
-                    </div>
-                    <div class="stats-card-body">
-                        <div class="stat-item">
-                            <span>Bu Ay:</span>
-                            <strong id="visitorThisMonth">0</strong>
-                        </div>
-                        <div class="stat-item">
-                            <span>Geçen Ay:</span>
-                            <strong id="visitorLastMonth">0</strong>
-                        </div>
-                    </div>
+            <!-- Messages Page -->
+            <section id="messages-page" class="page">
+                <div class="page-header">
+                    <h2>İletişim Mesajları</h2>
                 </div>
 
-                <div class="stats-card">
-                    <div class="stats-card-header">
-                        <i class="fas fa-chart-bar"></i>
-                        <h3>Yıllık Ziyaretçiler</h3>
-                    </div>
-                    <div class="stats-card-body">
-                        <div class="stat-item">
-                            <span>Bu Yıl:</span>
-                            <strong id="visitorThisYear">0</strong>
-                        </div>
-                        <div class="stat-item">
-                            <span>Geçen Yıl:</span>
-                            <strong id="visitorLastYear">0</strong>
-                        </div>
-                    </div>
+                <div id="messagesList" class="messages-list">
+                    <!-- Messages will be loaded here -->
                 </div>
+            </section>
+        </main>
 
-                <div class="stats-card full-width">
-                    <div class="stats-card-header">
-                        <i class="fas fa-users"></i>
-                        <h3>Toplam Ziyaretçiler</h3>
-                    </div>
-                    <div class="stats-card-body">
-                        <div class="stat-item">
-                            <span>Tüm Zamanlar:</span>
-                            <strong id="visitorTotal" style="font-size: 2rem; color: #bc13fe">0</strong>
-                        </div>
-                    </div>
+        <!-- Add Project Modal -->
+        <div id="projectModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Yeni Proje Ekle</h3>
+                    <button onclick="closeModal('projectModal')" class="close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
-            </div>
-        </section>
-
-        <!-- Messages Page -->
-        <section id="messages-page" class="page">
-            <div class="page-header">
-                <h2>İletişim Mesajları</h2>
-            </div>
-
-            <div id="messagesList" class="messages-list">
-                <!-- Messages will be loaded here -->
-            </div>
-        </section>
-    </main>
-
-    <!-- Add Project Modal -->
-    <div id="projectModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Yeni Proje Ekle</h3>
-                <button onclick="closeModal('projectModal')" class="close-btn">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form id="projectForm" onsubmit="
+                <form id="projectForm" onsubmit="
             event.preventDefault();
             saveProject();
           ">
-                <div class="form-group">
-                    <label>Proje Adı *</label>
-                    <input type="text" id="projectName" required placeholder="Örn: E-Ticaret Sitesi" />
-                </div>
+                    <div class="form-group">
+                        <label>Proje Adı *</label>
+                        <input type="text" id="projectName" required placeholder="Örn: E-Ticaret Sitesi" />
+                    </div>
 
-                <div class="form-group">
-                    <label>Açıklama *</label>
-                    <textarea id="projectDescription" required placeholder="Proje hakkında detaylı açıklama..."
-                        rows="4"></textarea>
-                </div>
+                    <div class="form-group">
+                        <label>Açıklama *</label>
+                        <textarea id="projectDescription" required placeholder="Proje hakkında detaylı açıklama..."
+                            rows="4"></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label>Kapak Resmi * (İlk resim kapak olacak)</label>
-                    <input type="hidden" id="projectPhotosUrls" required />
-                    <button type="button" onclick="uploadProjectPhotos()" class="btn-secondary"
-                        style="width: 100%; margin-bottom: 10px">
-                        <i class="fas fa-cloud-upload-alt"></i> Resimleri Yükle (Çoklu)
-                    </button>
-                    <div id="projectPreviews" style="
+                    <div class="form-group">
+                        <label>Kapak Resmi * (İlk resim kapak olacak)</label>
+                        <input type="hidden" id="projectPhotosUrls" required />
+                        <button type="button" onclick="uploadProjectPhotos()" class="btn-secondary"
+                            style="width: 100%; margin-bottom: 10px">
+                            <i class="fas fa-cloud-upload-alt"></i> Resimleri Yükle (Çoklu)
+                        </button>
+                        <div id="projectPreviews" style="
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
                 gap: 10px;
                 margin-top: 10px;
               "></div>
-                </div>
+                    </div>
 
-                <h4 style="
+                    <h4 style="
               margin: 20px 0 10px;
               color: #bc13fe;
               border-bottom: 1px solid rgba(188, 19, 254, 0.3);
               padding-bottom: 10px;
             ">
-                    <i class="fas fa-link"></i> İndirme Linkleri (Opsiyonel)
-                </h4>
+                        <i class="fas fa-link"></i> İndirme Linkleri (Opsiyonel)
+                    </h4>
 
-                <div class="links-grid">
-                    <div class="form-group">
-                        <label><i class="fab fa-github"></i> GitHub Link</label>
-                        <input type="url" id="projectGithubLink" placeholder="https://github.com/..." />
+                    <div class="links-grid">
+                        <div class="form-group">
+                            <label><i class="fab fa-github"></i> GitHub Link</label>
+                            <input type="url" id="projectGithubLink" placeholder="https://github.com/..." />
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fas fa-globe"></i> Live Demo Link</label>
+                            <input type="url" id="projectLiveLink" placeholder="https://..." />
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fab fa-google-play"></i> Play Store Link</label>
+                            <input type="url" id="projectPlayStoreLink" placeholder="https://play.google.com/..." />
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fab fa-apple"></i> App Store Link</label>
+                            <input type="url" id="projectAppStoreLink" placeholder="https://apps.apple.com/..." />
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fab fa-windows"></i> Windows İndirme Link</label>
+                            <input type="url" id="projectWindowsLink" placeholder="https://..." />
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label><i class="fas fa-globe"></i> Live Demo Link</label>
-                        <input type="url" id="projectLiveLink" placeholder="https://..." />
+                    <div class="modal-footer">
+                        <button type="button" onclick="closeModal('projectModal')" class="btn-secondary">
+                            İptal
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <span id="saveProjectText">Kaydet</span>
+                            <span id="saveProjectSpinner" class="spinner" style="display: none"></span>
+                        </button>
                     </div>
-
-                    <div class="form-group">
-                        <label><i class="fab fa-google-play"></i> Play Store Link</label>
-                        <input type="url" id="projectPlayStoreLink" placeholder="https://play.google.com/..." />
-                    </div>
-
-                    <div class="form-group">
-                        <label><i class="fab fa-apple"></i> App Store Link</label>
-                        <input type="url" id="projectAppStoreLink" placeholder="https://apps.apple.com/..." />
-                    </div>
-
-                    <div class="form-group">
-                        <label><i class="fab fa-windows"></i> Windows İndirme Link</label>
-                        <input type="url" id="projectWindowsLink" placeholder="https://..." />
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button type="button" onclick="closeModal('projectModal')" class="btn-secondary">
-                        İptal
-                    </button>
-                    <button type="submit" class="btn-primary">
-                        <span id="saveProjectText">Kaydet</span>
-                        <span id="saveProjectSpinner" class="spinner" style="display: none"></span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Skill Modal -->
-    <div id="skillModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Yeni Skill Ekle</h3>
-                <button onclick="closeModal('skillModal')" class="close-btn">
-                    <i class="fas fa-times"></i>
-                </button>
+                </form>
             </div>
-            <form id="skillForm" onsubmit="
+        </div>
+
+        <!-- Add Skill Modal -->
+        <div id="skillModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Yeni Skill Ekle</h3>
+                    <button onclick="closeModal('skillModal')" class="close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="skillForm" onsubmit="
             event.preventDefault();
             saveSkill();
           ">
-                <div class="form-group">
-                    <label>Başlık</label>
-                    <input type="text" id="skillTitle" required placeholder="Örn: Python" />
-                </div>
+                    <div class="form-group">
+                        <label>Başlık</label>
+                        <input type="text" id="skillTitle" required placeholder="Örn: Python" />
+                    </div>
 
-                <div class="form-group">
-                    <label>Skill İkonu/Resmi</label>
-                    <input type="hidden" id="skillPhotoUrl" required />
-                    <button type="button" onclick="uploadPhoto('skill')" class="btn-secondary"
-                        style="width: 100%; margin-bottom: 10px">
-                        <i class="fas fa-cloud-upload-alt"></i> Resim Yükle
-                    </button>
-                    <img id="skillPreview" style="
+                    <div class="form-group">
+                        <label>Skill İkonu/Resmi</label>
+                        <input type="hidden" id="skillPhotoUrl" required />
+                        <button type="button" onclick="uploadPhoto('skill')" class="btn-secondary"
+                            style="width: 100%; margin-bottom: 10px">
+                            <i class="fas fa-cloud-upload-alt"></i> Resim Yükle
+                        </button>
+                        <img id="skillPreview" style="
                 display: none;
                 width: 100%;
                 max-height: 200px;
@@ -393,292 +451,295 @@
                 border-radius: 8px;
                 margin-top: 10px;
               " />
-                </div>
+                    </div>
 
-                <div class="modal-footer">
-                    <button type="button" onclick="closeModal('skillModal')" class="btn-secondary">
-                        İptal
-                    </button>
-                    <button type="submit" class="btn-primary">
-                        <span id="saveSkillText">Kaydet</span>
-                        <span id="saveSkillSpinner" class="spinner" style="display: none"></span>
-                    </button>
-                </div>
-            </form>
+                    <div class="modal-footer">
+                        <button type="button" onclick="closeModal('skillModal')" class="btn-secondary">
+                            İptal
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <span id="saveSkillText">Kaydet</span>
+                            <span id="saveSkillSpinner" class="spinner" style="display: none"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <script>
-        // Cloudinary Upload Widget
-        function uploadPhoto(type) {
-            const widget = cloudinary.createUploadWidget(
-                {
-                    cloudName: CLOUD_NAME,
-                    uploadPreset: UPLOAD_PRESET,
-                    multiple: false,
-                    maxFiles: 1,
-                    sources: ["local", "url", "camera"],
-                    clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
-                    maxFileSize: 10000000,
-                },
-                (error, result) => {
-                    if (!error && result && result.event === "success") {
-                        const url = result.info.secure_url;
-                        document.getElementById(type + "PhotoUrl").value = url;
-                        document.getElementById(type + "Preview").src = url;
-                        document.getElementById(type + "Preview").style.display = "block";
-                    }
-                },
-            );
-            widget.open();
-        }
-
-        // Proje için çoklu foto upload
-        function uploadProjectPhotos() {
-            const widget = cloudinary.createUploadWidget(
-                {
-                    cloudName: CLOUD_NAME,
-                    uploadPreset: UPLOAD_PRESET,
-                    multiple: true,
-                    maxFiles: 10,
-                    sources: ["local", "url"],
-                    clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
-                    maxFileSize: 10000000,
-                },
-                (error, result) => {
-                    if (!error && result && result.event === "success") {
-                        const url = result.info.secure_url;
-                        const currentUrls =
-                            document.getElementById("projectPhotosUrls").value;
-                        const urlsArray = currentUrls ? currentUrls.split(",") : [];
-                        urlsArray.push(url);
-                        document.getElementById("projectPhotosUrls").value =
-                            urlsArray.join(",");
-
-                        const preview = document.createElement("div");
-                        preview.style.cssText =
-                            "position: relative; border-radius: 8px; overflow: hidden; margin: 5px;";
-                        preview.innerHTML = `<img src="${url}" style="width: 100%; height: 100px; object-fit: cover;" />`;
-                        document.getElementById("projectPreviews").appendChild(preview);
-                    }
-                },
-            );
-            widget.open();
-        }
-
-        // Auth Check
-        const allowedEmails = [
-            "umitjan.novruzov06@gmail.com",
-            "admin@devonic.com",
-        ];
-
-        auth.onAuthStateChanged((user) => {
-            if (!user || !allowedEmails.includes(user.email.toLowerCase())) {
-                window.location.href = "auth.html";
-                return;
+        <script>
+            // Cloudinary Upload Widget
+            function uploadPhoto(type) {
+                const widget = cloudinary.createUploadWidget(
+                    {
+                        cloudName: CLOUD_NAME,
+                        uploadPreset: UPLOAD_PRESET,
+                        multiple: false,
+                        maxFiles: 1,
+                        sources: ["local", "url", "camera"],
+                        clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
+                        maxFileSize: 10000000,
+                    },
+                    (error, result) => {
+                        if (!error && result && result.event === "success") {
+                            const url = result.info.secure_url;
+                            document.getElementById(type + "PhotoUrl").value = url;
+                            document.getElementById(type + "Preview").src = url;
+                            document.getElementById(type + "Preview").style.display = "block";
+                        }
+                    },
+                );
+                widget.open();
             }
 
-            document.getElementById("userEmail").textContent = user.email;
-            if (user.photoURL) {
-                document.getElementById("userPhoto").src = user.photoURL;
+            // Proje için çoklu foto upload
+            function uploadProjectPhotos() {
+                const widget = cloudinary.createUploadWidget(
+                    {
+                        cloudName: CLOUD_NAME,
+                        uploadPreset: UPLOAD_PRESET,
+                        multiple: true,
+                        maxFiles: 10,
+                        sources: ["local", "url"],
+                        clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
+                        maxFileSize: 10000000,
+                    },
+                    (error, result) => {
+                        if (!error && result && result.event === "success") {
+                            const url = result.info.secure_url;
+                            const currentUrls =
+                                document.getElementById("projectPhotosUrls").value;
+                            const urlsArray = currentUrls ? currentUrls.split(",") : [];
+                            urlsArray.push(url);
+                            document.getElementById("projectPhotosUrls").value =
+                                urlsArray.join(",");
+
+                            const preview = document.createElement("div");
+                            preview.style.cssText =
+                                "position: relative; border-radius: 8px; overflow: hidden; margin: 5px;";
+                            preview.innerHTML = `<img src="${url}" style="width: 100%; height: 100px; object-fit: cover;" />`;
+                            document.getElementById("projectPreviews").appendChild(preview);
+                        }
+                    },
+                );
+                widget.open();
             }
 
-            loadDashboardData();
-        });
+            // Auth Check
+            const allowedEmails = [
+                "umitjan.novruzov06@gmail.com",
+                "admin@devonic.com",
+            ];
 
-        // Logout
-        function logout() {
-            if (confirm("Çıkış yapmak istediğinize emin misiniz?")) {
-                auth.signOut().then(() => {
+            auth.onAuthStateChanged((user) => {
+                if (!user || !allowedEmails.includes(user.email.toLowerCase())) {
                     window.location.href = "auth.html";
-                });
-            }
-        }
+                    return;
+                }
 
-        // Toggle Sidebar
-        function toggleSidebar() {
-            const sidebar = document.querySelector(".sidebar");
-            sidebar.classList.toggle("show");
-        }
+                document.getElementById("userEmail").textContent = user.email;
+                if (user.photoURL) {
+                    document.getElementById("userPhoto").src = user.photoURL;
+                }
 
-        // Page Navigation
-        document.querySelectorAll(".nav-item").forEach((item) => {
-            item.addEventListener("click", (e) => {
-                e.preventDefault();
-                const page = item.dataset.page;
+                // GÜVENLİK: Session Manager başlat
+                sessionManager.init();
 
-                // Update active nav
-                document
-                    .querySelectorAll(".nav-item")
-                    .forEach((nav) => nav.classList.remove("active"));
-                item.classList.add("active");
-
-                // Update active page
-                document
-                    .querySelectorAll(".page")
-                    .forEach((p) => p.classList.remove("active"));
-                document.getElementById(page + "-page").classList.add("active");
-
-                // Update title
-                const titles = {
-                    dashboard: "Dashboard",
-                    projects: "Projeler",
-                    skills: "Skills",
-                    visitors: "Ziyaretçi İstatistikleri",
-                    messages: "İletişim Mesajları",
-                };
-                document.getElementById("pageTitle").textContent = titles[page];
-
-                // Load data
-                if (page === "projects") loadProjects();
-                if (page === "skills") loadSkills();
-                if (page === "visitors") loadVisitorStats();
-                if (page === "messages") loadMessages();
+                loadDashboardData();
             });
-        });
 
-        // Load Dashboard Data
-        function loadDashboardData() {
-            // Load project count
-            db.collection("projects")
-                .get()
-                .then((snapshot) => {
-                    document.getElementById("projectCount").textContent = snapshot.size;
+            // Logout
+            function logout() {
+                if (confirm("Çıkış yapmak istediğinize emin misiniz?")) {
+                    auth.signOut().then(() => {
+                        window.location.href = "auth.html";
+                    });
+                }
+            }
+
+            // Toggle Sidebar
+            function toggleSidebar() {
+                const sidebar = document.querySelector(".sidebar");
+                sidebar.classList.toggle("show");
+            }
+
+            // Page Navigation
+            document.querySelectorAll(".nav-item").forEach((item) => {
+                item.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const page = item.dataset.page;
+
+                    // Update active nav
+                    document
+                        .querySelectorAll(".nav-item")
+                        .forEach((nav) => nav.classList.remove("active"));
+                    item.classList.add("active");
+
+                    // Update active page
+                    document
+                        .querySelectorAll(".page")
+                        .forEach((p) => p.classList.remove("active"));
+                    document.getElementById(page + "-page").classList.add("active");
+
+                    // Update title
+                    const titles = {
+                        dashboard: "Dashboard",
+                        projects: "Projeler",
+                        skills: "Skills",
+                        visitors: "Ziyaretçi İstatistikleri",
+                        messages: "İletişim Mesajları",
+                    };
+                    document.getElementById("pageTitle").textContent = titles[page];
+
+                    // Load data
+                    if (page === "projects") loadProjects();
+                    if (page === "skills") loadSkills();
+                    if (page === "visitors") loadVisitorStats();
+                    if (page === "messages") loadMessages();
                 });
+            });
 
-            // Load skill count
-            db.collection("skills")
-                .get()
-                .then((snapshot) => {
-                    document.getElementById("skillCount").textContent = snapshot.size;
-                });
+            // Load Dashboard Data
+            function loadDashboardData() {
+                // Load project count
+                db.collection("projects")
+                    .get()
+                    .then((snapshot) => {
+                        document.getElementById("projectCount").textContent = snapshot.size;
+                    });
 
-            // Load today's visitors
-            const today = new Date().toISOString().split("T")[0];
-            db.collection("site-visitors")
-                .doc("summary")
-                .get()
-                .then((doc) => {
-                    if (doc.exists) {
-                        const todayCount = doc.data().daily?.[today] || 0;
-                        document.getElementById("todayVisitors").textContent = todayCount;
-                    }
-                });
+                // Load skill count
+                db.collection("skills")
+                    .get()
+                    .then((snapshot) => {
+                        document.getElementById("skillCount").textContent = snapshot.size;
+                    });
 
-            // Load messages count
-            db.collection("contacts")
-                .get()
-                .then((snapshot) => {
-                    document.getElementById("totalMessages").textContent =
-                        snapshot.size;
-                });
-        }
+                // Load today's visitors
+                const today = new Date().toISOString().split("T")[0];
+                db.collection("site-visitors")
+                    .doc("summary")
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            const todayCount = doc.data().daily?.[today] || 0;
+                            document.getElementById("todayVisitors").textContent = todayCount;
+                        }
+                    });
 
-        // Load Visitor Statistics
-        function loadVisitorStats() {
-            db.collection("site-visitors")
-                .doc("summary")
-                .onSnapshot((doc) => {
-                    if (!doc.exists) {
-                        // Veri yoksa 0 göster
-                        document.getElementById("visitorToday").textContent = 0;
-                        document.getElementById("visitorYesterday").textContent = 0;
-                        document.getElementById("visitorThisWeek").textContent = 0;
-                        document.getElementById("visitorLastWeek").textContent = 0;
-                        document.getElementById("visitorThisMonth").textContent = 0;
-                        document.getElementById("visitorLastMonth").textContent = 0;
-                        document.getElementById("visitorThisYear").textContent = 0;
-                        document.getElementById("visitorLastYear").textContent = 0;
-                        document.getElementById("visitorTotal").textContent = 0;
-                        return;
-                    }
+                // Load messages count
+                db.collection("contacts")
+                    .get()
+                    .then((snapshot) => {
+                        document.getElementById("totalMessages").textContent =
+                            snapshot.size;
+                    });
+            }
 
-                    const data = doc.data();
-                    const now = new Date();
-                    const today = now.toISOString().split("T")[0];
-                    const yesterday = new Date(now.getTime() - 86400000)
-                        .toISOString()
-                        .split("T")[0];
+            // Load Visitor Statistics
+            function loadVisitorStats() {
+                db.collection("site-visitors")
+                    .doc("summary")
+                    .onSnapshot((doc) => {
+                        if (!doc.exists) {
+                            // Veri yoksa 0 göster
+                            document.getElementById("visitorToday").textContent = 0;
+                            document.getElementById("visitorYesterday").textContent = 0;
+                            document.getElementById("visitorThisWeek").textContent = 0;
+                            document.getElementById("visitorLastWeek").textContent = 0;
+                            document.getElementById("visitorThisMonth").textContent = 0;
+                            document.getElementById("visitorLastMonth").textContent = 0;
+                            document.getElementById("visitorThisYear").textContent = 0;
+                            document.getElementById("visitorLastYear").textContent = 0;
+                            document.getElementById("visitorTotal").textContent = 0;
+                            return;
+                        }
 
-                    // Hafta hesapla
-                    function getWeekNumber(date) {
-                        const d = new Date(
-                            Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
-                        );
-                        const dayNum = d.getUTCDay() || 7;
-                        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-                        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-                        return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-                    }
-
-                    const year = now.getFullYear().toString();
-                    const month = (now.getMonth() + 1).toString().padStart(2, "0");
-                    const week = getWeekNumber(now).toString();
-                    const lastWeek = getWeekNumber(
-                        new Date(now.getTime() - 604800000),
-                    ).toString();
-                    const lastMonth =
-                        now.getMonth() === 0
-                            ? "12"
-                            : now.getMonth().toString().padStart(2, "0");
-                    const lastYear = (now.getFullYear() - 1).toString();
-
-                    // Günlük
-                    document.getElementById("visitorToday").textContent =
-                        data.daily?.[today] || 0;
-                    document.getElementById("visitorYesterday").textContent =
-                        data.daily?.[yesterday] || 0;
-
-                    // Haftalık
-                    document.getElementById("visitorThisWeek").textContent =
-                        data.weekly?.[`${year}-W${week}`] || 0;
-                    document.getElementById("visitorLastWeek").textContent =
-                        data.weekly?.[`${year}-W${lastWeek}`] || 0;
-
-                    // Aylık
-                    document.getElementById("visitorThisMonth").textContent =
-                        data.monthly?.[`${year}-${month}`] || 0;
-                    document.getElementById("visitorLastMonth").textContent =
-                        data.monthly?.[`${year}-${lastMonth}`] || 0;
-
-                    // Yıllık
-                    document.getElementById("visitorThisYear").textContent =
-                        data.yearly?.[year] || 0;
-                    document.getElementById("visitorLastYear").textContent =
-                        data.yearly?.[lastYear] || 0;
-
-                    // Toplam
-                    const total = Object.values(data.yearly || {}).reduce(
-                        (a, b) => a + b,
-                        0,
-                    );
-                    document.getElementById("visitorTotal").textContent = total;
-                });
-        }
-
-        // Load Messages
-        function loadMessages() {
-            db.collection("contacts")
-                .orderBy("timestamp", "desc")
-                .onSnapshot((snapshot) => {
-                    const messagesList = document.getElementById("messagesList");
-                    messagesList.innerHTML = "";
-
-                    if (snapshot.empty) {
-                        messagesList.innerHTML =
-                            '<div class="empty-state">Henüz mesaj yok.</div>';
-                        return;
-                    }
-
-                    snapshot.forEach((doc) => {
                         const data = doc.data();
-                        const timestamp = data.timestamp
-                            ? new Date(data.timestamp.toDate()).toLocaleString("tr-TR")
-                            : "Tarih Bilinmiyor";
+                        const now = new Date();
+                        const today = now.toISOString().split("T")[0];
+                        const yesterday = new Date(now.getTime() - 86400000)
+                            .toISOString()
+                            .split("T")[0];
 
-                        const messageCard = document.createElement("div");
-                        messageCard.className = `message-card ${data.read ? "" : "unread"}`;
-                        messageCard.innerHTML = `
+                        // Hafta hesapla
+                        function getWeekNumber(date) {
+                            const d = new Date(
+                                Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+                            );
+                            const dayNum = d.getUTCDay() || 7;
+                            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+                            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+                            return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+                        }
+
+                        const year = now.getFullYear().toString();
+                        const month = (now.getMonth() + 1).toString().padStart(2, "0");
+                        const week = getWeekNumber(now).toString();
+                        const lastWeek = getWeekNumber(
+                            new Date(now.getTime() - 604800000),
+                        ).toString();
+                        const lastMonth =
+                            now.getMonth() === 0
+                                ? "12"
+                                : now.getMonth().toString().padStart(2, "0");
+                        const lastYear = (now.getFullYear() - 1).toString();
+
+                        // Günlük
+                        document.getElementById("visitorToday").textContent =
+                            data.daily?.[today] || 0;
+                        document.getElementById("visitorYesterday").textContent =
+                            data.daily?.[yesterday] || 0;
+
+                        // Haftalık
+                        document.getElementById("visitorThisWeek").textContent =
+                            data.weekly?.[`${year}-W${week}`] || 0;
+                        document.getElementById("visitorLastWeek").textContent =
+                            data.weekly?.[`${year}-W${lastWeek}`] || 0;
+
+                        // Aylık
+                        document.getElementById("visitorThisMonth").textContent =
+                            data.monthly?.[`${year}-${month}`] || 0;
+                        document.getElementById("visitorLastMonth").textContent =
+                            data.monthly?.[`${year}-${lastMonth}`] || 0;
+
+                        // Yıllık
+                        document.getElementById("visitorThisYear").textContent =
+                            data.yearly?.[year] || 0;
+                        document.getElementById("visitorLastYear").textContent =
+                            data.yearly?.[lastYear] || 0;
+
+                        // Toplam
+                        const total = Object.values(data.yearly || {}).reduce(
+                            (a, b) => a + b,
+                            0,
+                        );
+                        document.getElementById("visitorTotal").textContent = total;
+                    });
+            }
+
+            // Load Messages
+            function loadMessages() {
+                db.collection("contacts")
+                    .orderBy("timestamp", "desc")
+                    .onSnapshot((snapshot) => {
+                        const messagesList = document.getElementById("messagesList");
+                        messagesList.innerHTML = "";
+
+                        if (snapshot.empty) {
+                            messagesList.innerHTML =
+                                '<div class="empty-state">Henüz mesaj yok.</div>';
+                            return;
+                        }
+
+                        snapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const timestamp = data.timestamp
+                                ? new Date(data.timestamp.toDate()).toLocaleString("tr-TR")
+                                : "Tarih Bilinmiyor";
+
+                            const messageCard = document.createElement("div");
+                            messageCard.className = `message-card ${data.read ? "" : "unread"}`;
+                            messageCard.innerHTML = `
                             <div class="message-header">
                                 <div>
                                     <h3>${data.name}</h3>
@@ -698,120 +759,120 @@
                                 </button>
                             </div>
                         `;
-                        messagesList.appendChild(messageCard);
+                            messagesList.appendChild(messageCard);
+                        });
                     });
-                });
-        }
-
-        // Mark message as read
-        function markMessageAsRead(id) {
-            db.collection("contacts")
-                .doc(id)
-                .update({ read: true })
-                .then(() => {
-                    console.log("Mesaj okundu olarak işaretlendi");
-                })
-                .catch((err) => console.error("Hata:", err));
-        }
-
-        // Delete message
-        function deleteMessage(id) {
-            if (!confirm("Bu mesajı silmek istediğinize emin misiniz?")) return;
-            db.collection("contacts")
-                .doc(id)
-                .delete()
-                .then(() => {
-                    console.log("Mesaj silindi");
-                })
-                .catch((err) => console.error("Hata:", err));
-        }
-
-        // Projects Functions
-        let editProjectId = null;
-
-        function showAddProjectModal() {
-            editProjectId = null;
-            document.querySelector("#projectModal .modal-header h3").textContent =
-                "Yeni Proje Ekle";
-            document.getElementById("projectModal").classList.add("show");
-            document.getElementById("projectForm").reset();
-            document.getElementById("projectPhotosUrls").value = "";
-            document.getElementById("projectPreviews").innerHTML = "";
-        }
-
-        async function editProject(id) {
-            editProjectId = id;
-            document.querySelector("#projectModal .modal-header h3").textContent =
-                "Projeyi Düzenle";
-
-            try {
-                const doc = await db.collection("projects").doc(id).get();
-                if (!doc.exists) {
-                    alert("Proje bulunamadı!");
-                    return;
-                }
-
-                const data = doc.data();
-
-                // Form alanlarını doldur
-                document.getElementById("projectName").value = data.name || "";
-                document.getElementById("projectDescription").value =
-                    data.description || "";
-                document.getElementById("projectGithubLink").value =
-                    data.githubLink || "";
-                document.getElementById("projectLiveLink").value =
-                    data.liveLink || "";
-                document.getElementById("projectPlayStoreLink").value =
-                    data.playStoreLink || "";
-                document.getElementById("projectAppStoreLink").value =
-                    data.appStoreLink || "";
-                document.getElementById("projectWindowsLink").value =
-                    data.windowsLink || "";
-
-                // Resimleri göster
-                const images = data.images || [];
-                document.getElementById("projectPhotosUrls").value = images.join(",");
-                const previews = document.getElementById("projectPreviews");
-                previews.innerHTML = "";
-                images.forEach((img) => {
-                    const preview = document.createElement("div");
-                    preview.style.cssText =
-                        "position: relative; border-radius: 8px; overflow: hidden; margin: 5px;";
-                    preview.innerHTML = `<img src="${img}" style="width: 100%; height: 100px; object-fit: cover;" />`;
-                    previews.appendChild(preview);
-                });
-
-                // Modal'ı aç
-                document.getElementById("projectModal").classList.add("show");
-            } catch (error) {
-                alert("Proje yüklenemedi: " + error.message);
             }
-        }
 
-        function loadProjects() {
-            const list = document.getElementById("projectsList");
-            list.innerHTML = '<div class="loading">Yükleniyor...</div>';
+            // Mark message as read
+            function markMessageAsRead(id) {
+                db.collection("contacts")
+                    .doc(id)
+                    .update({ read: true })
+                    .then(() => {
+                        console.log("Mesaj okundu olarak işaretlendi");
+                    })
+                    .catch((err) => console.error("Hata:", err));
+            }
 
-            db.collection("projects")
-                .orderBy("createdAt", "desc")
-                .get()
-                .then((snapshot) => {
-                    if (snapshot.empty) {
-                        list.innerHTML =
-                            '<div class="empty-state">Henüz proje eklenmemiş.</div>';
+            // Delete message
+            function deleteMessage(id) {
+                if (!confirm("Bu mesajı silmek istediğinize emin misiniz?")) return;
+                db.collection("contacts")
+                    .doc(id)
+                    .delete()
+                    .then(() => {
+                        console.log("Mesaj silindi");
+                    })
+                    .catch((err) => console.error("Hata:", err));
+            }
+
+            // Projects Functions
+            let editProjectId = null;
+
+            function showAddProjectModal() {
+                editProjectId = null;
+                document.querySelector("#projectModal .modal-header h3").textContent =
+                    "Yeni Proje Ekle";
+                document.getElementById("projectModal").classList.add("show");
+                document.getElementById("projectForm").reset();
+                document.getElementById("projectPhotosUrls").value = "";
+                document.getElementById("projectPreviews").innerHTML = "";
+            }
+
+            async function editProject(id) {
+                editProjectId = id;
+                document.querySelector("#projectModal .modal-header h3").textContent =
+                    "Projeyi Düzenle";
+
+                try {
+                    const doc = await db.collection("projects").doc(id).get();
+                    if (!doc.exists) {
+                        alert("Proje bulunamadı!");
                         return;
                     }
 
-                    list.innerHTML = "";
-                    snapshot.forEach((doc) => {
-                        const data = doc.data();
-                        const imageUrl =
-                            data.coverImage ||
-                            data.imageUrl ||
-                            (data.images && data.images[0]) ||
-                            "";
-                        const views = data.views || 0;
-                        list.innerHTML += `
+                    const data = doc.data();
+
+                    // Form alanlarını doldur
+                    document.getElementById("projectName").value = data.name || "";
+                    document.getElementById("projectDescription").value =
+                        data.description || "";
+                    document.getElementById("projectGithubLink").value =
+                        data.githubLink || "";
+                    document.getElementById("projectLiveLink").value =
+                        data.liveLink || "";
+                    document.getElementById("projectPlayStoreLink").value =
+                        data.playStoreLink || "";
+                    document.getElementById("projectAppStoreLink").value =
+                        data.appStoreLink || "";
+                    document.getElementById("projectWindowsLink").value =
+                        data.windowsLink || "";
+
+                    // Resimleri göster
+                    const images = data.images || [];
+                    document.getElementById("projectPhotosUrls").value = images.join(",");
+                    const previews = document.getElementById("projectPreviews");
+                    previews.innerHTML = "";
+                    images.forEach((img) => {
+                        const preview = document.createElement("div");
+                        preview.style.cssText =
+                            "position: relative; border-radius: 8px; overflow: hidden; margin: 5px;";
+                        preview.innerHTML = `<img src="${img}" style="width: 100%; height: 100px; object-fit: cover;" />`;
+                        previews.appendChild(preview);
+                    });
+
+                    // Modal'ı aç
+                    document.getElementById("projectModal").classList.add("show");
+                } catch (error) {
+                    alert("Proje yüklenemedi: " + error.message);
+                }
+            }
+
+            function loadProjects() {
+                const list = document.getElementById("projectsList");
+                list.innerHTML = '<div class="loading">Yükleniyor...</div>';
+
+                db.collection("projects")
+                    .orderBy("createdAt", "desc")
+                    .get()
+                    .then((snapshot) => {
+                        if (snapshot.empty) {
+                            list.innerHTML =
+                                '<div class="empty-state">Henüz proje eklenmemiş.</div>';
+                            return;
+                        }
+
+                        list.innerHTML = "";
+                        snapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const imageUrl =
+                                data.coverImage ||
+                                data.imageUrl ||
+                                (data.images && data.images[0]) ||
+                                "";
+                            const views = data.views || 0;
+                            list.innerHTML += `
                             <div class="project-card">
                                 <img src="${imageUrl}" alt="${data.name}" />
                                 <div class="project-info">
@@ -833,137 +894,137 @@
                                 </div>
                             </div>
                         `;
+                        });
+                    })
+                    .catch((err) => {
+                        list.innerHTML =
+                            '<div class="error">Yükleme hatası: ' + err.message + "</div>";
                     });
-                })
-                .catch((err) => {
-                    list.innerHTML =
-                        '<div class="error">Yükleme hatası: ' + err.message + "</div>";
-                });
-        }
-
-        async function saveProject() {
-            const name = document.getElementById("projectName").value.trim();
-            const description = document
-                .getElementById("projectDescription")
-                .value.trim();
-            const photosUrls = document.getElementById("projectPhotosUrls").value;
-            const githubLink = document
-                .getElementById("projectGithubLink")
-                .value.trim();
-            const liveLink = document
-                .getElementById("projectLiveLink")
-                .value.trim();
-            const playStoreLink = document
-                .getElementById("projectPlayStoreLink")
-                .value.trim();
-            const appStoreLink = document
-                .getElementById("projectAppStoreLink")
-                .value.trim();
-            const windowsLink = document
-                .getElementById("projectWindowsLink")
-                .value.trim();
-
-            if (!name || !description || !photosUrls) {
-                alert("Lütfen zorunlu alanları doldurun!");
-                return;
             }
 
-            // Show loading
-            document.getElementById("saveProjectText").style.display = "none";
-            document.getElementById("saveProjectSpinner").style.display =
-                "inline-block";
+            async function saveProject() {
+                const name = document.getElementById("projectName").value.trim();
+                const description = document
+                    .getElementById("projectDescription")
+                    .value.trim();
+                const photosUrls = document.getElementById("projectPhotosUrls").value;
+                const githubLink = document
+                    .getElementById("projectGithubLink")
+                    .value.trim();
+                const liveLink = document
+                    .getElementById("projectLiveLink")
+                    .value.trim();
+                const playStoreLink = document
+                    .getElementById("projectPlayStoreLink")
+                    .value.trim();
+                const appStoreLink = document
+                    .getElementById("projectAppStoreLink")
+                    .value.trim();
+                const windowsLink = document
+                    .getElementById("projectWindowsLink")
+                    .value.trim();
 
-            try {
-                const photosArray = photosUrls.split(",");
-                const projectData = {
-                    name,
-                    description,
-                    coverImage: photosArray[0],
-                    images: photosArray,
-                };
-
-                // Sadece dolu olan linkleri ekle
-                if (githubLink) projectData.githubLink = githubLink;
-                if (liveLink) projectData.liveLink = liveLink;
-                if (playStoreLink) projectData.playStoreLink = playStoreLink;
-                if (appStoreLink) projectData.appStoreLink = appStoreLink;
-                if (windowsLink) projectData.windowsLink = windowsLink;
-
-                // Yeni proje mi, düzenleme mi?
-                if (editProjectId) {
-                    // Düzenleme - views ve createdAt'ı koruyalım
-                    await db
-                        .collection("projects")
-                        .doc(editProjectId)
-                        .update(projectData);
-                    alert("Proje başarıyla güncellendi!");
-                } else {
-                    // Yeni ekleme
-                    projectData.views = 0;
-                    projectData.createdAt =
-                        firebase.firestore.FieldValue.serverTimestamp();
-                    await db.collection("projects").add(projectData);
-                    alert("Proje başarıyla eklendi!");
+                if (!name || !description || !photosUrls) {
+                    alert("Lütfen zorunlu alanları doldurun!");
+                    return;
                 }
-                closeModal("projectModal");
-                loadProjects();
-                loadDashboardData();
-            } catch (error) {
-                alert("Hata: " + error.message);
-            } finally {
-                document.getElementById("saveProjectText").style.display = "inline";
-                document.getElementById("saveProjectSpinner").style.display = "none";
-            }
-        }
 
-        function deleteProject(id) {
-            if (!confirm("Bu projeyi silmek istediğinize emin misiniz?")) return;
+                // Show loading
+                document.getElementById("saveProjectText").style.display = "none";
+                document.getElementById("saveProjectSpinner").style.display =
+                    "inline-block";
 
-            db.collection("projects")
-                .doc(id)
-                .get()
-                .then(async (doc) => {
-                    const data = doc.data();
-                    // Delete image from Cloudinary (optional - requires backend)
-                    // Cloudinary'den silmek için backend API gerekir veya direkt bırakabilirsiniz
+                try {
+                    const photosArray = photosUrls.split(",");
+                    const projectData = {
+                        name,
+                        description,
+                        coverImage: photosArray[0],
+                        images: photosArray,
+                    };
 
-                    // Delete document
-                    return db.collection("projects").doc(id).delete();
-                })
-                .then(() => {
-                    alert("Proje silindi!");
+                    // Sadece dolu olan linkleri ekle
+                    if (githubLink) projectData.githubLink = githubLink;
+                    if (liveLink) projectData.liveLink = liveLink;
+                    if (playStoreLink) projectData.playStoreLink = playStoreLink;
+                    if (appStoreLink) projectData.appStoreLink = appStoreLink;
+                    if (windowsLink) projectData.windowsLink = windowsLink;
+
+                    // Yeni proje mi, düzenleme mi?
+                    if (editProjectId) {
+                        // Düzenleme - views ve createdAt'ı koruyalım
+                        await db
+                            .collection("projects")
+                            .doc(editProjectId)
+                            .update(projectData);
+                        alert("Proje başarıyla güncellendi!");
+                    } else {
+                        // Yeni ekleme
+                        projectData.views = 0;
+                        projectData.createdAt =
+                            firebase.firestore.FieldValue.serverTimestamp();
+                        await db.collection("projects").add(projectData);
+                        alert("Proje başarıyla eklendi!");
+                    }
+                    closeModal("projectModal");
                     loadProjects();
                     loadDashboardData();
-                })
-                .catch((err) => alert("Hata: " + err.message));
-        }
+                } catch (error) {
+                    alert("Hata: " + error.message);
+                } finally {
+                    document.getElementById("saveProjectText").style.display = "inline";
+                    document.getElementById("saveProjectSpinner").style.display = "none";
+                }
+            }
 
-        // Skills Functions
-        function showAddSkillModal() {
-            document.getElementById("skillModal").classList.add("show");
-            document.getElementById("skillForm").reset();
-            document.getElementById("skillPhotoUrl").value = "";
-            document.getElementById("skillPreview").style.display = "none";
-        }
+            function deleteProject(id) {
+                if (!confirm("Bu projeyi silmek istediğinize emin misiniz?")) return;
 
-        function loadSkills() {
-            const list = document.getElementById("skillsList");
-            list.innerHTML = '<div class="loading">Yükleniyor...</div>';
-
-            db.collection("skills")
-                .orderBy("createdAt", "desc")
-                .get()
-                .then((snapshot) => {
-                    if (snapshot.empty) {
-                        list.innerHTML =
-                            '<div class="empty-state">Henüz skill eklenmemiş.</div>';
-                        return;
-                    }
-
-                    list.innerHTML = "";
-                    snapshot.forEach((doc) => {
+                db.collection("projects")
+                    .doc(id)
+                    .get()
+                    .then(async (doc) => {
                         const data = doc.data();
-                        list.innerHTML += `
+                        // Delete image from Cloudinary (optional - requires backend)
+                        // Cloudinary'den silmek için backend API gerekir veya direkt bırakabilirsiniz
+
+                        // Delete document
+                        return db.collection("projects").doc(id).delete();
+                    })
+                    .then(() => {
+                        alert("Proje silindi!");
+                        loadProjects();
+                        loadDashboardData();
+                    })
+                    .catch((err) => alert("Hata: " + err.message));
+            }
+
+            // Skills Functions
+            function showAddSkillModal() {
+                document.getElementById("skillModal").classList.add("show");
+                document.getElementById("skillForm").reset();
+                document.getElementById("skillPhotoUrl").value = "";
+                document.getElementById("skillPreview").style.display = "none";
+            }
+
+            function loadSkills() {
+                const list = document.getElementById("skillsList");
+                list.innerHTML = '<div class="loading">Yükleniyor...</div>';
+
+                db.collection("skills")
+                    .orderBy("createdAt", "desc")
+                    .get()
+                    .then((snapshot) => {
+                        if (snapshot.empty) {
+                            list.innerHTML =
+                                '<div class="empty-state">Henüz skill eklenmemiş.</div>';
+                            return;
+                        }
+
+                        list.innerHTML = "";
+                        snapshot.forEach((doc) => {
+                            const data = doc.data();
+                            list.innerHTML += `
                             <div class="skill-card">
                                 <img src="${data.imageUrl}" alt="${data.title}" />
                                 <h3>${data.title}</h3>
@@ -972,82 +1033,82 @@
                                 </button>
                             </div>
                         `;
+                        });
+                    })
+                    .catch((err) => {
+                        list.innerHTML =
+                            '<div class="error">Yükleme hatası: ' + err.message + "</div>";
                     });
-                })
-                .catch((err) => {
-                    list.innerHTML =
-                        '<div class="error">Yükleme hatası: ' + err.message + "</div>";
-                });
-        }
-
-        async function saveSkill() {
-            const title = document.getElementById("skillTitle").value.trim();
-            const imageUrl = document.getElementById("skillPhotoUrl").value;
-
-            if (!title || !imageUrl) {
-                alert("Lütfen tüm alanları doldurun!");
-                return;
             }
 
-            // Show loading
-            document.getElementById("saveSkillText").style.display = "none";
-            document.getElementById("saveSkillSpinner").style.display =
-                "inline-block";
+            async function saveSkill() {
+                const title = document.getElementById("skillTitle").value.trim();
+                const imageUrl = document.getElementById("skillPhotoUrl").value;
 
-            try {
-                // Save to Firestore
-                await db.collection("skills").add({
-                    title,
-                    imageUrl,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                });
+                if (!title || !imageUrl) {
+                    alert("Lütfen tüm alanları doldurun!");
+                    return;
+                }
 
-                alert("Skill başarıyla eklendi!");
-                closeModal("skillModal");
-                loadSkills();
-                loadDashboardData();
-            } catch (error) {
-                alert("Hata: " + error.message);
-            } finally {
-                document.getElementById("saveSkillText").style.display = "inline";
-                document.getElementById("saveSkillSpinner").style.display = "none";
-            }
-        }
+                // Show loading
+                document.getElementById("saveSkillText").style.display = "none";
+                document.getElementById("saveSkillSpinner").style.display =
+                    "inline-block";
 
-        function deleteSkill(id) {
-            if (!confirm("Bu skill'i silmek istediğinize emin misiniz?")) return;
+                try {
+                    // Save to Firestore
+                    await db.collection("skills").add({
+                        title,
+                        imageUrl,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    });
 
-            db.collection("skills")
-                .doc(id)
-                .get()
-                .then(async (doc) => {
-                    const data = doc.data();
-                    // Delete image from Cloudinary (optional - requires backend)
-                    // Cloudinary'den silmek için backend API gerekir veya direkt bırakabilirsiniz
-
-                    // Delete document
-                    return db.collection("skills").doc(id).delete();
-                })
-                .then(() => {
-                    alert("Skill silindi!");
+                    alert("Skill başarıyla eklendi!");
+                    closeModal("skillModal");
                     loadSkills();
                     loadDashboardData();
-                })
-                .catch((err) => alert("Hata: " + err.message));
-        }
-
-        // Modal Functions
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove("show");
-        }
-
-        // Close modal on outside click
-        window.onclick = function (event) {
-            if (event.target.classList.contains("modal")) {
-                event.target.classList.remove("show");
+                } catch (error) {
+                    alert("Hata: " + error.message);
+                } finally {
+                    document.getElementById("saveSkillText").style.display = "inline";
+                    document.getElementById("saveSkillSpinner").style.display = "none";
+                }
             }
-        };
-    </script>
-</body>
+
+            function deleteSkill(id) {
+                if (!confirm("Bu skill'i silmek istediğinize emin misiniz?")) return;
+
+                db.collection("skills")
+                    .doc(id)
+                    .get()
+                    .then(async (doc) => {
+                        const data = doc.data();
+                        // Delete image from Cloudinary (optional - requires backend)
+                        // Cloudinary'den silmek için backend API gerekir veya direkt bırakabilirsiniz
+
+                        // Delete document
+                        return db.collection("skills").doc(id).delete();
+                    })
+                    .then(() => {
+                        alert("Skill silindi!");
+                        loadSkills();
+                        loadDashboardData();
+                    })
+                    .catch((err) => alert("Hata: " + err.message));
+            }
+
+            // Modal Functions
+            function closeModal(modalId) {
+                document.getElementById(modalId).classList.remove("show");
+            }
+
+            // Close modal on outside click
+            window.onclick = function (event) {
+                if (event.target.classList.contains("modal")) {
+                    event.target.classList.remove("show");
+                }
+            };
+        </script>
+    </body>
 
 </html>
