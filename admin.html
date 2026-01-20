@@ -211,29 +211,31 @@
                     <i class="fas fa-link"></i> İndirme Linkleri (Opsiyonel)
                 </h4>
 
-                <div class="form-group">
-                    <label><i class="fab fa-github"></i> GitHub Link</label>
-                    <input type="url" id="projectGithubLink" placeholder="https://github.com/..." />
-                </div>
+                <div class="links-grid">
+                    <div class="form-group">
+                        <label><i class="fab fa-github"></i> GitHub Link</label>
+                        <input type="url" id="projectGithubLink" placeholder="https://github.com/..." />
+                    </div>
 
-                <div class="form-group">
-                    <label><i class="fas fa-globe"></i> Live Demo Link</label>
-                    <input type="url" id="projectLiveLink" placeholder="https://..." />
-                </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-globe"></i> Live Demo Link</label>
+                        <input type="url" id="projectLiveLink" placeholder="https://..." />
+                    </div>
 
-                <div class="form-group">
-                    <label><i class="fab fa-google-play"></i> Play Store Link</label>
-                    <input type="url" id="projectPlayStoreLink" placeholder="https://play.google.com/..." />
-                </div>
+                    <div class="form-group">
+                        <label><i class="fab fa-google-play"></i> Play Store Link</label>
+                        <input type="url" id="projectPlayStoreLink" placeholder="https://play.google.com/..." />
+                    </div>
 
-                <div class="form-group">
-                    <label><i class="fab fa-apple"></i> App Store Link</label>
-                    <input type="url" id="projectAppStoreLink" placeholder="https://apps.apple.com/..." />
-                </div>
+                    <div class="form-group">
+                        <label><i class="fab fa-apple"></i> App Store Link</label>
+                        <input type="url" id="projectAppStoreLink" placeholder="https://apps.apple.com/..." />
+                    </div>
 
-                <div class="form-group">
-                    <label><i class="fab fa-windows"></i> Windows İndirme Link</label>
-                    <input type="url" id="projectWindowsLink" placeholder="https://..." />
+                    <div class="form-group">
+                        <label><i class="fab fa-windows"></i> Windows İndirme Link</label>
+                        <input type="url" id="projectWindowsLink" placeholder="https://..." />
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -440,11 +442,65 @@
         }
 
         // Projects Functions
+        let editProjectId = null;
+
         function showAddProjectModal() {
+            editProjectId = null;
+            document.querySelector("#projectModal .modal-header h3").textContent =
+                "Yeni Proje Ekle";
             document.getElementById("projectModal").classList.add("show");
             document.getElementById("projectForm").reset();
             document.getElementById("projectPhotosUrls").value = "";
             document.getElementById("projectPreviews").innerHTML = "";
+        }
+
+        async function editProject(id) {
+            editProjectId = id;
+            document.querySelector("#projectModal .modal-header h3").textContent =
+                "Projeyi Düzenle";
+
+            try {
+                const doc = await db.collection("projects").doc(id).get();
+                if (!doc.exists) {
+                    alert("Proje bulunamadı!");
+                    return;
+                }
+
+                const data = doc.data();
+
+                // Form alanlarını doldur
+                document.getElementById("projectName").value = data.name || "";
+                document.getElementById("projectDescription").value =
+                    data.description || "";
+                document.getElementById("projectGithubLink").value =
+                    data.githubLink || "";
+                document.getElementById("projectLiveLink").value =
+                    data.liveLink || "";
+                document.getElementById("projectPlayStoreLink").value =
+                    data.playStoreLink || "";
+                document.getElementById("projectAppStoreLink").value =
+                    data.appStoreLink || "";
+                document.getElementById("projectWindowsLink").value =
+                    data.windowsLink || "";
+
+                // Resimleri göster
+                const images = data.images || [];
+                document.getElementById("projectPhotosUrls").value = images.join(",");
+                const previews = document.getElementById("projectPreviews");
+                previews.innerHTML = "";
+                images.forEach((img) => {
+                    const preview = document.createElement("div");
+                    preview.style.cssText =
+                        "position: relative; border-radius: 8px; overflow: hidden; margin: 5px;";
+                    preview.innerHTML = `<img src="${img}" style="width: 100%; height: 100px; object-fit: cover;" />`;
+                    previews.appendChild(preview);
+                });
+
+                // Modal'ı aç
+                document.getElementById("projectModal").classList.add("show");
+            } catch (error) {
+                alert("Proje yüklenemedi: " + error.message);
+            }
         }
 
         function loadProjects() {
@@ -469,15 +525,26 @@
                             data.imageUrl ||
                             (data.images && data.images[0]) ||
                             "";
+                        const views = data.views || 0;
                         list.innerHTML += `
                             <div class="project-card">
                                 <img src="${imageUrl}" alt="${data.name}" />
                                 <div class="project-info">
                                     <h3>${data.name}</h3>
                                     <p>${data.description}</p>
-                                    <button onclick="deleteProject('${doc.id}')" class="btn-delete">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <div class="project-stats">
+                                        <span class="view-count">
+                                            <i class="fas fa-eye"></i> ${views} görüntülenme
+                                        </span>
+                                    </div>
+                                    <div class="card-actions">
+                                        <button onclick="editProject('${doc.id}')" class="btn-edit" title="Düzenle">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button onclick="deleteProject('${doc.id}')" class="btn-delete" title="Sil">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -528,8 +595,6 @@
                     description,
                     coverImage: photosArray[0],
                     images: photosArray,
-                    views: 0,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 };
 
                 // Sadece dolu olan linkleri ekle
@@ -539,10 +604,22 @@
                 if (appStoreLink) projectData.appStoreLink = appStoreLink;
                 if (windowsLink) projectData.windowsLink = windowsLink;
 
-                // Save to Firestore
-                await db.collection("projects").add(projectData);
-
-                alert("Proje başarıyla eklendi!");
+                // Yeni proje mi, düzenleme mi?
+                if (editProjectId) {
+                    // Düzenleme - views ve createdAt'ı koruyalım
+                    await db
+                        .collection("projects")
+                        .doc(editProjectId)
+                        .update(projectData);
+                    alert("Proje başarıyla güncellendi!");
+                } else {
+                    // Yeni ekleme
+                    projectData.views = 0;
+                    projectData.createdAt =
+                        firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection("projects").add(projectData);
+                    alert("Proje başarıyla eklendi!");
+                }
                 closeModal("projectModal");
                 loadProjects();
                 loadDashboardData();

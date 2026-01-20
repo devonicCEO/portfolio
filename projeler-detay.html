@@ -1,253 +1,303 @@
 <!doctype html>
 <html lang="tr">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Proje Detay | Devonic</title>
 
     <!-- Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
-    <meta
-      http-equiv="Referrer-Policy"
-      content="strict-origin-when-cross-origin"
-    />
-    <meta
-      http-equiv="Permissions-Policy"
-      content="geolocation=(), microphone=(), camera=()"
-    />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
 
     <link rel="stylesheet" href="css/projeler-detay.css" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="js/firebase-config.js"></script>
-  </head>
-  <body>
+</head>
+
+<body>
     <!-- Back Button -->
     <a href="index.html" class="back-btn">
-      <i class="fas fa-arrow-left"></i> Ana Sayfa
+        <i class="fas fa-arrow-left"></i> Ana Sayfa
     </a>
 
     <!-- Loading -->
     <div id="loading" class="loading-screen">
-      <div class="spinner"></div>
-      <p>Yükleniyor...</p>
+        <div class="spinner"></div>
+        <p>Yükleniyor...</p>
     </div>
 
     <!-- Main Content -->
     <div class="container" id="mainContent" style="display: none">
-      <!-- Project Header -->
-      <div class="project-header">
-        <h1 id="projectName"></h1>
-        <div class="project-meta">
-          <span id="projectViews"
-            ><i class="fas fa-eye"></i> Yükleniyor...</span
-          >
-        </div>
-      </div>
-
-      <!-- Project Content -->
-      <div class="project-layout">
-        <!-- Left: Cover Image -->
-        <div class="project-media">
-          <div class="cover-image">
-            <img id="coverImage" src="" alt="Project Cover" />
-          </div>
-
-          <!-- Image Gallery -->
-          <div class="image-gallery" id="imageGallery"></div>
+        <!-- Project Header -->
+        <div class="project-header">
+            <h1 id="projectName"></h1>
+            <div class="project-meta">
+                <span id="projectViews"><i class="fas fa-eye"></i> Yükleniyor...</span>
+            </div>
         </div>
 
-        <!-- Right: Details & Downloads -->
-        <div class="project-details">
-          <div class="section">
-            <h2>Açıklama</h2>
-            <p id="projectDescription"></p>
-          </div>
+        <!-- Project Content -->
+        <div class="project-layout">
+            <!-- Left: Cover Image -->
+            <div class="project-media">
+                <div class="cover-image">
+                    <img id="coverImage" src="" alt="Project Cover" />
+                </div>
 
-          <!-- Download Links -->
-          <div class="section downloads" id="downloadSection">
-            <h2>İndirmeler & Linkler</h2>
-            <div class="download-buttons" id="downloadButtons"></div>
-          </div>
+                <!-- Image Gallery -->
+                <div class="image-gallery" id="imageGallery"></div>
+            </div>
+
+            <!-- Right: Details & Downloads -->
+            <div class="project-details">
+                <div class="section">
+                    <h2>Açıklama</h2>
+                    <p id="projectDescription"></p>
+                </div>
+
+                <!-- Download Links -->
+                <div class="section downloads" id="downloadSection">
+                    <h2>İndirmeler & Linkler</h2>
+                    <div class="download-buttons" id="downloadButtons"></div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 
     <script>
-      // URL'den proje ID'sini al
-      const urlParams = new URLSearchParams(window.location.search);
-      const projectId = urlParams.get("id");
+        // URL'den proje ID'sini al
+        const urlParams = new URLSearchParams(window.location.search);
+        const projectId = urlParams.get("id");
 
-      if (!projectId) {
-        alert("Proje bulunamadı!");
-        window.location.href = "index.html";
-      }
-
-      // Görüntülenme sayısını artır
-      async function incrementViews() {
-        try {
-          const projectRef = db.collection("projects").doc(projectId);
-          const doc = await projectRef.get();
-
-          if (doc.exists) {
-            const currentViews = doc.data().views || 0;
-            await projectRef.update({
-              views: currentViews + 1,
-            });
-          }
-        } catch (error) {
-          console.error("Görüntülenme sayısı güncellenemedi:", error);
-        }
-      }
-
-      // Projeyi yükle
-      async function loadProject() {
-        try {
-          const doc = await db.collection("projects").doc(projectId).get();
-
-          if (!doc.exists) {
+        if (!projectId) {
             alert("Proje bulunamadı!");
             window.location.href = "index.html";
-            return;
-          }
-
-          const project = doc.data();
-
-          // Başlık
-          document.getElementById("projectName").textContent = project.name;
-
-          // Açıklama
-          document.getElementById("projectDescription").textContent =
-            project.description;
-
-          // Görüntülenme sayısı
-          const views = project.views || 0;
-          document.getElementById("projectViews").innerHTML =
-            `<i class="fas fa-eye"></i> ${views} görüntülenme`;
-
-          // Cover image
-          const coverImg =
-            project.coverImage ||
-            (project.images && project.images[0]) ||
-            project.imageUrl ||
-            "";
-          document.getElementById("coverImage").src = coverImg;
-          document.getElementById("coverImage").alt = project.name;
-
-          // Image gallery
-          const gallery = document.getElementById("imageGallery");
-          if (project.images && project.images.length > 0) {
-            project.images.forEach((img, index) => {
-              const imgDiv = document.createElement("div");
-              imgDiv.className = "gallery-item";
-              imgDiv.innerHTML = `<img src="${img}" alt="${project.name} - ${index + 1}" />`;
-              imgDiv.onclick = () => {
-                document.getElementById("coverImage").src = img;
-              };
-              gallery.appendChild(imgDiv);
-            });
-          }
-
-          // Download buttons
-          const downloadButtons = document.getElementById("downloadButtons");
-          const downloadSection = document.getElementById("downloadSection");
-          let hasLinks = false;
-
-          const links = [
-            {
-              key: "githubLink",
-              icon: "fab fa-github",
-              label: "GitHub",
-              color: "#333",
-            },
-            {
-              key: "liveLink",
-              icon: "fas fa-globe",
-              label: "Canlı Demo",
-              color: "#4CAF50",
-            },
-            {
-              key: "playStoreLink",
-              icon: "fab fa-google-play",
-              label: "Google Play",
-              color: "#34A853",
-            },
-            {
-              key: "appStoreLink",
-              icon: "fab fa-app-store",
-              label: "App Store",
-              color: "#007AFF",
-            },
-            {
-              key: "windowsLink",
-              icon: "fab fa-windows",
-              label: "Windows",
-              color: "#0078D4",
-            },
-          ];
-
-          links.forEach((link) => {
-            if (project[link.key]) {
-              hasLinks = true;
-              const btn = document.createElement("a");
-              btn.href = project[link.key];
-              btn.target = "_blank";
-              btn.className = "download-btn";
-              btn.style.borderColor = link.color;
-              btn.innerHTML = `<i class="${link.icon}"></i> ${link.label}`;
-              btn.onmouseover = () => {
-                btn.style.background = link.color;
-                btn.style.color = "#fff";
-              };
-              btn.onmouseout = () => {
-                btn.style.background = "transparent";
-                btn.style.color = link.color;
-              };
-              downloadButtons.appendChild(btn);
-            }
-          });
-
-          // Eğer hiç link yoksa download section'ı gizle
-          if (!hasLinks) {
-            downloadSection.style.display = "none";
-          }
-
-          // Görüntülenme sayısını artır
-          await incrementViews();
-
-          // Loading'i gizle, içeriği göster
-          document.getElementById("loading").style.display = "none";
-          document.getElementById("mainContent").style.display = "block";
-        } catch (error) {
-          console.error("Proje yüklenemedi:", error);
-          alert("Proje yüklenirken hata oluştu!");
-          window.location.href = "index.html";
         }
-      }
 
-      // Sayfa yüklendiğinde
-      if (typeof db !== "undefined") {
-        loadProject();
-      } else {
-        setTimeout(() => {
-          if (typeof db !== "undefined") {
+        // Bugün bu projeyi zaten görüntüledim mi kontrol et
+        function hasViewedToday(projectId) {
+            const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+            const lastViewKey = `lastView_${projectId}`;
+            const lastViewDate = localStorage.getItem(lastViewKey);
+            return lastViewDate === today;
+        }
+
+        // Bugün görüntülendiğini işaretle
+        function markViewedToday(projectId) {
+            const today = new Date().toISOString().split("T")[0];
+            const lastViewKey = `lastView_${projectId}`;
+            localStorage.setItem(lastViewKey, today);
+        }
+
+        // Görüntülenme sayısını artır (günde bir kez)
+        async function incrementViews() {
+            try {
+                // Bugün bu projeyi zaten gördüyse, tekrar sayma
+                if (hasViewedToday(projectId)) {
+                    console.log("ℹ Bu proje bugün zaten görüntülendi");
+                    return;
+                }
+
+                const projectRef = db.collection("projects").doc(projectId);
+                const doc = await projectRef.get();
+
+                if (doc.exists) {
+                    const now = new Date();
+                    const dateStr = now.toISOString().split("T")[0]; // YYYY-MM-DD
+
+                    // Hafta numarasını hesapla
+                    function getWeekNumber(date) {
+                        const d = new Date(
+                            Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
+                        );
+                        const dayNum = d.getUTCDay() || 7;
+                        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+                        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+                        return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+                    }
+
+                    const year = now.getFullYear().toString();
+                    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+                    const week = getWeekNumber(now).toString();
+
+                    // Toplam görüntülenme + detaylı istatistikler
+                    await projectRef.update({
+                        views: firebase.firestore.FieldValue.increment(1),
+                        viewStats: {
+                            daily: {
+                                [dateStr]: firebase.firestore.FieldValue.increment(1),
+                            },
+                            weekly: {
+                                [`${year}-W${week}`]:
+                                    firebase.firestore.FieldValue.increment(1),
+                            },
+                            monthly: {
+                                [`${year}-${month}`]:
+                                    firebase.firestore.FieldValue.increment(1),
+                            },
+                            yearly: {
+                                [year]: firebase.firestore.FieldValue.increment(1),
+                            },
+                        },
+                        lastViewed: firebase.firestore.FieldValue.serverTimestamp(),
+                    });
+
+                    // Bugün görüntülendiğini işaretle
+                    markViewedToday(projectId);
+
+                    console.log("✓ Proje görüntülenmesi kaydedildi:", dateStr);
+                }
+            } catch (error) {
+                console.error("Görüntülenme sayısı güncellenemedi:", error);
+            }
+        }
+
+        // Projeyi yükle
+        async function loadProject() {
+            try {
+                const doc = await db.collection("projects").doc(projectId).get();
+
+                if (!doc.exists) {
+                    alert("Proje bulunamadı!");
+                    window.location.href = "index.html";
+                    return;
+                }
+
+                const project = doc.data();
+
+                // Başlık
+                document.getElementById("projectName").textContent = project.name;
+
+                // Açıklama
+                document.getElementById("projectDescription").textContent =
+                    project.description;
+
+                // Görüntülenme sayısı
+                const views = project.views || 0;
+                document.getElementById("projectViews").innerHTML =
+                    `<i class="fas fa-eye"></i> ${views} görüntülenme`;
+
+                // Cover image
+                const coverImg =
+                    project.coverImage ||
+                    (project.images && project.images[0]) ||
+                    project.imageUrl ||
+                    "";
+                document.getElementById("coverImage").src = coverImg;
+                document.getElementById("coverImage").alt = project.name;
+
+                // Image gallery
+                const gallery = document.getElementById("imageGallery");
+                if (project.images && project.images.length > 0) {
+                    project.images.forEach((img, index) => {
+                        const imgDiv = document.createElement("div");
+                        imgDiv.className = "gallery-item";
+                        imgDiv.innerHTML = `<img src="${img}" alt="${project.name} - ${index + 1}" />`;
+                        imgDiv.onclick = () => {
+                            document.getElementById("coverImage").src = img;
+                        };
+                        gallery.appendChild(imgDiv);
+                    });
+                }
+
+                // Download buttons
+                const downloadButtons = document.getElementById("downloadButtons");
+                const downloadSection = document.getElementById("downloadSection");
+                let hasLinks = false;
+
+                const links = [
+                    {
+                        key: "githubLink",
+                        icon: "fab fa-github",
+                        label: "GitHub",
+                        color: "#333",
+                    },
+                    {
+                        key: "liveLink",
+                        icon: "fas fa-globe",
+                        label: "Canlı Demo",
+                        color: "#4CAF50",
+                    },
+                    {
+                        key: "playStoreLink",
+                        icon: "fab fa-google-play",
+                        label: "Google Play",
+                        color: "#34A853",
+                    },
+                    {
+                        key: "appStoreLink",
+                        icon: "fab fa-app-store",
+                        label: "App Store",
+                        color: "#007AFF",
+                    },
+                    {
+                        key: "windowsLink",
+                        icon: "fab fa-windows",
+                        label: "Windows",
+                        color: "#0078D4",
+                    },
+                ];
+
+                links.forEach((link) => {
+                    if (project[link.key]) {
+                        hasLinks = true;
+                        const btn = document.createElement("a");
+                        btn.href = project[link.key];
+                        btn.target = "_blank";
+                        btn.className = "download-btn";
+                        btn.style.borderColor = link.color;
+                        btn.innerHTML = `<i class="${link.icon}"></i> ${link.label}`;
+                        btn.onmouseover = () => {
+                            btn.style.background = link.color;
+                            btn.style.color = "#fff";
+                        };
+                        btn.onmouseout = () => {
+                            btn.style.background = "transparent";
+                            btn.style.color = link.color;
+                        };
+                        downloadButtons.appendChild(btn);
+                    }
+                });
+
+                // Eğer hiç link yoksa download section'ı gizle
+                if (!hasLinks) {
+                    downloadSection.style.display = "none";
+                }
+
+                // Görüntülenme sayısını artır
+                await incrementViews();
+
+                // Loading'i gizle, içeriği göster
+                document.getElementById("loading").style.display = "none";
+                document.getElementById("mainContent").style.display = "block";
+            } catch (error) {
+                console.error("Proje yüklenemedi:", error);
+                alert("Proje yüklenirken hata oluştu!");
+                window.location.href = "index.html";
+            }
+        }
+
+        // Sayfa yüklendiğinde
+        if (typeof db !== "undefined") {
             loadProject();
-          } else {
-            alert("Firebase yüklenemedi!");
-            window.location.href = "index.html";
-          }
-        }, 1000);
-      }
+        } else {
+            setTimeout(() => {
+                if (typeof db !== "undefined") {
+                    loadProject();
+                } else {
+                    alert("Firebase yüklenemedi!");
+                    window.location.href = "index.html";
+                }
+            }, 1000);
+        }
     </script>
-  </body>
+</body>
+
 </html>

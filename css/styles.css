@@ -1,3 +1,156 @@
+/* Navigation Bar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 0, 26, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(188, 19, 254, 0.2);
+  z-index: 1000;
+  padding: 1rem 0;
+}
+
+.nav-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #bc13fe;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* Desktop Menu */
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 2.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  color: #e0e0e0;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: #bc13fe;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #bc13fe;
+  transition: width 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.nav-link.admin-link {
+  padding: 0.5rem 1rem;
+  border: 1px solid #bc13fe;
+  border-radius: 6px;
+  color: #bc13fe;
+}
+
+.nav-link.admin-link:hover {
+  background: #bc13fe;
+  color: #000;
+}
+
+/* Hamburger Menu */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  gap: 6px;
+}
+
+.hamburger span {
+  width: 25px;
+  height: 3px;
+  background: #bc13fe;
+  border-radius: 3px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(45deg) translate(10px, 10px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/* Body Padding */
+body {
+  padding-top: 70px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hamburger {
+    display: flex;
+  }
+
+  .nav-menu {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    background: rgba(10, 0, 26, 0.98);
+    flex-direction: column;
+    gap: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    border-bottom: 1px solid rgba(188, 19, 254, 0.2);
+  }
+
+  .nav-menu.active {
+    max-height: 300px;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 1rem 5%;
+    border-bottom: 1px solid rgba(188, 19, 254, 0.1);
+  }
+
+  .nav-link::after {
+    display: none;
+  }
+
+  .nav-link.admin-link {
+    border: none;
+    border-radius: 0;
+    color: #bc13fe;
+  }
+}
+
 /* Genel */
 html,
 body {
