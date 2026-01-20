@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Devonic Admin Panel</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="css/admin.css" />
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <!-- Cloudinary Widget -->
+    <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
+
+    <script>
+        // Cloudinary Ayarları
+        const CLOUD_NAME = "dkrjbf599"; // Cloudinary'den alın
+        const UPLOAD_PRESET = "portfolio"; // Cloudinary'de oluşturun
+    </script>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="assets/logo.png" alt="Devonic Logo" />
+                <h2>DEVONIC</h2>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#projects" class="nav-item" data-page="projects">
+                <i class="fas fa-project-diagram"></i>
+                <span>Projeler</span>
+            </a>
+            <a href="#skills" class="nav-item" data-page="skills">
+                <i class="fas fa-code"></i>
+                <span>Skills</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button onclick="logout()" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Çıkış Yap</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span id="userEmail"></span>
+                    <img id="userPhoto" src="assets/logo.png" alt="User" class="user-avatar" />
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Page -->
+        <section id="dashboard-page" class="page active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="projectCount">0</h3>
+                        <p>Projeler</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="skillCount">0</h3>
+                        <p>Skills</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>-</h3>
+                        <p>Ziyaretçiler</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>-</h3>
+                        <p>Mesajlar</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="welcome-card">
+                    <h2>Hoş Geldiniz! 👋</h2>
+                    <p>
+                        Devonic Admin Paneline hoş geldiniz. Buradan projelerinizi ve
+                        yeteneklerinizi yönetebilirsiniz.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Page -->
+        <section id="projects-page" class="page">
+            <div class="page-header">
+                <h2>Projeler</h2>
+                <button onclick="showAddProjectModal()" class="btn-primary">
+                    <i class="fas fa-plus"></i> Yeni Proje
+                </button>
+            </div>
+
+            <div id="projectsList" class="projects-grid">
+                <!-- Projects will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Skills Page -->
+        <section id="skills-page" class="page">
+            <div class="page-header">
+                <h2>Skills</h2>
+                <button onclick="showAddSkillModal()" class="btn-primary">
+                    <i class="fas fa-plus"></i> Yeni Skill
+                </button>
+            </div>
+
+            <div id="skillsList" class="skills-grid">
+                <!-- Skills will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Add Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Yeni Proje Ekle</h3>
+                <button onclick="closeModal('projectModal')" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="projectForm" onsubmit="
+            event.preventDefault();
+            saveProject();
+          ">
+                <div class="form-group">
+                    <label>Proje Adı *</label>
+                    <input type="text" id="projectName" required placeholder="Örn: E-Ticaret Sitesi" />
+                </div>
+
+                <div class="form-group">
+                    <label>Açıklama *</label>
+                    <textarea id="projectDescription" required placeholder="Proje hakkında detaylı açıklama..."
+                        rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Kapak Resmi * (İlk resim kapak olacak)</label>
+                    <input type="hidden" id="projectPhotosUrls" required />
+                    <button type="button" onclick="uploadProjectPhotos()" class="btn-secondary"
+                        style="width: 100%; margin-bottom: 10px">
+                        <i class="fas fa-cloud-upload-alt"></i> Resimleri Yükle (Çoklu)
+                    </button>
+                    <div id="projectPreviews" style="
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                gap: 10px;
+                margin-top: 10px;
+              "></div>
+                </div>
+
+                <h4 style="
+              margin: 20px 0 10px;
+              color: #bc13fe;
+              border-bottom: 1px solid rgba(188, 19, 254, 0.3);
+              padding-bottom: 10px;
+            ">
+                    <i class="fas fa-link"></i> İndirme Linkleri (Opsiyonel)
+                </h4>
+
+                <div class="form-group">
+                    <label><i class="fab fa-github"></i> GitHub Link</label>
+                    <input type="url" id="projectGithubLink" placeholder="https://github.com/..." />
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-globe"></i> Live Demo Link</label>
+                    <input type="url" id="projectLiveLink" placeholder="https://..." />
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fab fa-google-play"></i> Play Store Link</label>
+                    <input type="url" id="projectPlayStoreLink" placeholder="https://play.google.com/..." />
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fab fa-apple"></i> App Store Link</label>
+                    <input type="url" id="projectAppStoreLink" placeholder="https://apps.apple.com/..." />
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fab fa-windows"></i> Windows İndirme Link</label>
+                    <input type="url" id="projectWindowsLink" placeholder="https://..." />
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('projectModal')" class="btn-secondary">
+                        İptal
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <span id="saveProjectText">Kaydet</span>
+                        <span id="saveProjectSpinner" class="spinner" style="display: none"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Skill Modal -->
+    <div id="skillModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Yeni Skill Ekle</h3>
+                <button onclick="closeModal('skillModal')" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="skillForm" onsubmit="
+            event.preventDefault();
+            saveSkill();
+          ">
+                <div class="form-group">
+                    <label>Başlık</label>
+                    <input type="text" id="skillTitle" required placeholder="Örn: Python" />
+                </div>
+
+                <div class="form-group">
+                    <label>Skill İkonu/Resmi</label>
+                    <input type="hidden" id="skillPhotoUrl" required />
+                    <button type="button" onclick="uploadPhoto('skill')" class="btn-secondary"
+                        style="width: 100%; margin-bottom: 10px">
+                        <i class="fas fa-cloud-upload-alt"></i> Resim Yükle
+                    </button>
+                    <img id="skillPreview" style="
+                display: none;
+                width: 100%;
+                max-height: 200px;
+                object-fit: cover;
+                border-radius: 8px;
+                margin-top: 10px;
+              " />
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('skillModal')" class="btn-secondary">
+                        İptal
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <span id="saveSkillText">Kaydet</span>
+                        <span id="saveSkillSpinner" class="spinner" style="display: none"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Cloudinary Upload Widget
+        function uploadPhoto(type) {
+            const widget = cloudinary.createUploadWidget(
+                {
+                    cloudName: CLOUD_NAME,
+                    uploadPreset: UPLOAD_PRESET,
+                    multiple: false,
+                    maxFiles: 1,
+                    sources: ["local", "url", "camera"],
+                    clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
+                    maxFileSize: 10000000,
+                },
+                (error, result) => {
+                    if (!error && result && result.event === "success") {
+                        const url = result.info.secure_url;
+                        document.getElementById(type + "PhotoUrl").value = url;
+                        document.getElementById(type + "Preview").src = url;
+                        document.getElementById(type + "Preview").style.display = "block";
+                    }
+                },
+            );
+            widget.open();
+        }
+
+        // Proje için çoklu foto upload
+        function uploadProjectPhotos() {
+            const widget = cloudinary.createUploadWidget(
+                {
+                    cloudName: CLOUD_NAME,
+                    uploadPreset: UPLOAD_PRESET,
+                    multiple: true,
+                    maxFiles: 10,
+                    sources: ["local", "url"],
+                    clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
+                    maxFileSize: 10000000,
+                },
+                (error, result) => {
+                    if (!error && result && result.event === "success") {
+                        const url = result.info.secure_url;
+                        const currentUrls =
+                            document.getElementById("projectPhotosUrls").value;
+                        const urlsArray = currentUrls ? currentUrls.split(",") : [];
+                        urlsArray.push(url);
+                        document.getElementById("projectPhotosUrls").value =
+                            urlsArray.join(",");
+
+                        const preview = document.createElement("div");
+                        preview.style.cssText =
+                            "position: relative; border-radius: 8px; overflow: hidden; margin: 5px;";
+                        preview.innerHTML = `<img src="${url}" style="width: 100%; height: 100px; object-fit: cover;" />`;
+                        document.getElementById("projectPreviews").appendChild(preview);
+                    }
+                },
+            );
+            widget.open();
+        }
+
+        // Auth Check
+        const allowedEmails = [
+            "umitjan.novruzov06@gmail.com",
+            "admin@devonic.com",
+        ];
+
+        auth.onAuthStateChanged((user) => {
+            if (!user || !allowedEmails.includes(user.email.toLowerCase())) {
+                window.location.href = "auth.html";
+                return;
+            }
+
+            document.getElementById("userEmail").textContent = user.email;
+            if (user.photoURL) {
+                document.getElementById("userPhoto").src = user.photoURL;
+            }
+
+            loadDashboardData();
+        });
+
+        // Logout
+        function logout() {
+            if (confirm("Çıkış yapmak istediğinize emin misiniz?")) {
+                auth.signOut().then(() => {
+                    window.location.href = "auth.html";
+                });
+            }
+        }
+
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const sidebar = document.querySelector(".sidebar");
+            sidebar.classList.toggle("show");
+        }
+
+        // Page Navigation
+        document.querySelectorAll(".nav-item").forEach((item) => {
+            item.addEventListener("click", (e) => {
+                e.preventDefault();
+                const page = item.dataset.page;
+
+                // Update active nav
+                document
+                    .querySelectorAll(".nav-item")
+                    .forEach((nav) => nav.classList.remove("active"));
+                item.classList.add("active");
+
+                // Update active page
+                document
+                    .querySelectorAll(".page")
+                    .forEach((p) => p.classList.remove("active"));
+                document.getElementById(page + "-page").classList.add("active");
+
+                // Update title
+                const titles = {
+                    dashboard: "Dashboard",
+                    projects: "Projeler",
+                    skills: "Skills",
+                };
+                document.getElementById("pageTitle").textContent = titles[page];
+
+                // Load data
+                if (page === "projects") loadProjects();
+                if (page === "skills") loadSkills();
+            });
+        });
+
+        // Load Dashboard Data
+        function loadDashboardData() {
+            // Load project count
+            db.collection("projects")
+                .get()
+                .then((snapshot) => {
+                    document.getElementById("projectCount").textContent = snapshot.size;
+                });
+
+            // Load skill count
+            db.collection("skills")
+                .get()
+                .then((snapshot) => {
+                    document.getElementById("skillCount").textContent = snapshot.size;
+                });
+        }
+
+        // Projects Functions
+        function showAddProjectModal() {
+            document.getElementById("projectModal").classList.add("show");
+            document.getElementById("projectForm").reset();
+            document.getElementById("projectPhotosUrls").value = "";
+            document.getElementById("projectPreviews").innerHTML = "";
+        }
+
+        function loadProjects() {
+            const list = document.getElementById("projectsList");
+            list.innerHTML = '<div class="loading">Yükleniyor...</div>';
+
+            db.collection("projects")
+                .orderBy("createdAt", "desc")
+                .get()
+                .then((snapshot) => {
+                    if (snapshot.empty) {
+                        list.innerHTML =
+                            '<div class="empty-state">Henüz proje eklenmemiş.</div>';
+                        return;
+                    }
+
+                    list.innerHTML = "";
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const imageUrl =
+                            data.coverImage ||
+                            data.imageUrl ||
+                            (data.images && data.images[0]) ||
+                            "";
+                        list.innerHTML += `
+                            <div class="project-card">
+                                <img src="${imageUrl}" alt="${data.name}" />
+                                <div class="project-info">
+                                    <h3>${data.name}</h3>
+                                    <p>${data.description}</p>
+                                    <button onclick="deleteProject('${doc.id}')" class="btn-delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                })
+                .catch((err) => {
+                    list.innerHTML =
+                        '<div class="error">Yükleme hatası: ' + err.message + "</div>";
+                });
+        }
+
+        async function saveProject() {
+            const name = document.getElementById("projectName").value.trim();
+            const description = document
+                .getElementById("projectDescription")
+                .value.trim();
+            const photosUrls = document.getElementById("projectPhotosUrls").value;
+            const githubLink = document
+                .getElementById("projectGithubLink")
+                .value.trim();
+            const liveLink = document
+                .getElementById("projectLiveLink")
+                .value.trim();
+            const playStoreLink = document
+                .getElementById("projectPlayStoreLink")
+                .value.trim();
+            const appStoreLink = document
+                .getElementById("projectAppStoreLink")
+                .value.trim();
+            const windowsLink = document
+                .getElementById("projectWindowsLink")
+                .value.trim();
+
+            if (!name || !description || !photosUrls) {
+                alert("Lütfen zorunlu alanları doldurun!");
+                return;
+            }
+
+            // Show loading
+            document.getElementById("saveProjectText").style.display = "none";
+            document.getElementById("saveProjectSpinner").style.display =
+                "inline-block";
+
+            try {
+                const photosArray = photosUrls.split(",");
+                const projectData = {
+                    name,
+                    description,
+                    coverImage: photosArray[0],
+                    images: photosArray,
+                    views: 0,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                };
+
+                // Sadece dolu olan linkleri ekle
+                if (githubLink) projectData.githubLink = githubLink;
+                if (liveLink) projectData.liveLink = liveLink;
+                if (playStoreLink) projectData.playStoreLink = playStoreLink;
+                if (appStoreLink) projectData.appStoreLink = appStoreLink;
+                if (windowsLink) projectData.windowsLink = windowsLink;
+
+                // Save to Firestore
+                await db.collection("projects").add(projectData);
+
+                alert("Proje başarıyla eklendi!");
+                closeModal("projectModal");
+                loadProjects();
+                loadDashboardData();
+            } catch (error) {
+                alert("Hata: " + error.message);
+            } finally {
+                document.getElementById("saveProjectText").style.display = "inline";
+                document.getElementById("saveProjectSpinner").style.display = "none";
+            }
+        }
+
+        function deleteProject(id) {
+            if (!confirm("Bu projeyi silmek istediğinize emin misiniz?")) return;
+
+            db.collection("projects")
+                .doc(id)
+                .get()
+                .then(async (doc) => {
+                    const data = doc.data();
+                    // Delete image from Cloudinary (optional - requires backend)
+                    // Cloudinary'den silmek için backend API gerekir veya direkt bırakabilirsiniz
+
+                    // Delete document
+                    return db.collection("projects").doc(id).delete();
+                })
+                .then(() => {
+                    alert("Proje silindi!");
+                    loadProjects();
+                    loadDashboardData();
+                })
+                .catch((err) => alert("Hata: " + err.message));
+        }
+
+        // Skills Functions
+        function showAddSkillModal() {
+            document.getElementById("skillModal").classList.add("show");
+            document.getElementById("skillForm").reset();
+            document.getElementById("skillPhotoUrl").value = "";
+            document.getElementById("skillPreview").style.display = "none";
+        }
+
+        function loadSkills() {
+            const list = document.getElementById("skillsList");
+            list.innerHTML = '<div class="loading">Yükleniyor...</div>';
+
+            db.collection("skills")
+                .orderBy("createdAt", "desc")
+                .get()
+                .then((snapshot) => {
+                    if (snapshot.empty) {
+                        list.innerHTML =
+                            '<div class="empty-state">Henüz skill eklenmemiş.</div>';
+                        return;
+                    }
+
+                    list.innerHTML = "";
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        list.innerHTML += `
+                            <div class="skill-card">
+                                <img src="${data.imageUrl}" alt="${data.title}" />
+                                <h3>${data.title}</h3>
+                                <button onclick="deleteSkill('${doc.id}')" class="btn-delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        `;
+                    });
+                })
+                .catch((err) => {
+                    list.innerHTML =
+                        '<div class="error">Yükleme hatası: ' + err.message + "</div>";
+                });
+        }
+
+        async function saveSkill() {
+            const title = document.getElementById("skillTitle").value.trim();
+            const imageUrl = document.getElementById("skillPhotoUrl").value;
+
+            if (!title || !imageUrl) {
+                alert("Lütfen tüm alanları doldurun!");
+                return;
+            }
+
+            // Show loading
+            document.getElementById("saveSkillText").style.display = "none";
+            document.getElementById("saveSkillSpinner").style.display =
+                "inline-block";
+
+            try {
+                // Save to Firestore
+                await db.collection("skills").add({
+                    title,
+                    imageUrl,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                });
+
+                alert("Skill başarıyla eklendi!");
+                closeModal("skillModal");
+                loadSkills();
+                loadDashboardData();
+            } catch (error) {
+                alert("Hata: " + error.message);
+            } finally {
+                document.getElementById("saveSkillText").style.display = "inline";
+                document.getElementById("saveSkillSpinner").style.display = "none";
+            }
+        }
+
+        function deleteSkill(id) {
+            if (!confirm("Bu skill'i silmek istediğinize emin misiniz?")) return;
+
+            db.collection("skills")
+                .doc(id)
+                .get()
+                .then(async (doc) => {
+                    const data = doc.data();
+                    // Delete image from Cloudinary (optional - requires backend)
+                    // Cloudinary'den silmek için backend API gerekir veya direkt bırakabilirsiniz
+
+                    // Delete document
+                    return db.collection("skills").doc(id).delete();
+                })
+                .then(() => {
+                    alert("Skill silindi!");
+                    loadSkills();
+                    loadDashboardData();
+                })
+                .catch((err) => alert("Hata: " + err.message));
+        }
+
+        // Modal Functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove("show");
+        }
+
+        // Close modal on outside click
+        window.onclick = function (event) {
+            if (event.target.classList.contains("modal")) {
+                event.target.classList.remove("show");
+            }
+        };
+    </script>
+</body>
+
+</html>

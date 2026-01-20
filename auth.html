@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://apis.google.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; connect-src 'self' https://www.gstatic.com https://firebase.googleapis.com https://identitytoolkit.googleapis.com https://firebaseapp.com https://firebaseio.com https://firebasestorage.googleapis.com https://securetoken.googleapis.com https://accounts.google.com; frame-src 'self' https://ilk-proje-b974f.firebaseapp.com https://accounts.google.com; font-src 'self' https://fonts.gstatic.com;" />
+    <title>Devonic | Auth</title>
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Modern Auth CSS -->
+    <link rel="stylesheet" href="css/auth.css" />
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
+
+    <link rel="icon" href="data:," />
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="auth-background">
+        <div class="floating-orb"></div>
+        <div class="floating-orb"></div>
+    </div>
+
+    <!-- Auth Container -->
+    <div class="auth-container">
+        <!-- Logo -->
+        <div class="auth-logo">
+            <div class="logo-icon">
+                <img src="assets/logo.png" alt="Devonic Logo" />
+            </div>
+            <h1>DEVONIC</h1>
+            <p>Admin Panel</p>
+        </div>
+
+        <!-- Auth Card -->
+        <div class="auth-card">
+            <!-- Lockout Timer (Hidden by default) -->
+            <div id="lockoutTimerBox" class="lockout-timer" style="display: none">
+                <i class="fas fa-lock"></i>
+                <div class="timer-text" id="lockoutTimer">00:00</div>
+                <p>Çok fazla başarısız deneme. Lütfen bekleyin.</p>
+            </div>
+
+            <h2>Hoş Geldiniz</h2>
+            <p class="subtitle">Devam etmek için giriş yapın</p>
+
+            <!-- Error/Success Alert -->
+            <div id="alertBox" style="display: none"></div>
+
+            <!-- Email/Password Form -->
+            <form id="loginForm" onsubmit="
+            event.preventDefault();
+            login();
+          ">
+                <div class="form-group">
+                    <label for="email">E-posta</label>
+                    <div class="input-wrapper">
+                        <input type="email" id="email" class="form-input" placeholder="admin@devonic.com" required
+                            autocomplete="email" />
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Şifre</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" class="form-input" placeholder="••••••••" required
+                            autocomplete="current-password" />
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </div>
+
+                <button type="submit" id="loginBtn" class="btn btn-primary">
+                    <span id="loginBtnText">Giriş Yap</span>
+                    <span id="loginSpinner" class="spinner" style="display: none"></span>
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>VEYA</span>
+            </div>
+
+            <!-- Google Sign In -->
+            <button type="button" onclick="googleLogin()" class="btn btn-google">
+                <i class="fab fa-google"></i>
+                <span>Google ile Giriş Yap</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ========== CONSTANTS ==========
+        const MAX_ATTEMPTS = 5;
+        const LOCKOUT_TIME_MS = 15 * 60 * 1000; // 15 dakika
+
+        // ========== UTILITY FUNCTIONS ==========
+        function showAlert(message, type = "error") {
+            const alertBox = document.getElementById("alertBox");
+            const icons = {
+                error: "fa-exclamation-circle",
+                warning: "fa-exclamation-triangle",
+                success: "fa-check-circle",
+            };
+
+            alertBox.innerHTML = `
+                <div class="alert alert-${type}">
+                    <i class="fas ${icons[type]}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            alertBox.style.display = "block";
+
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                alertBox.style.display = "none";
+            }, 5000);
+        }
+
+        function setLoading(isLoading) {
+            const btn = document.getElementById("loginBtn");
+            const btnText = document.getElementById("loginBtnText");
+            const spinner = document.getElementById("loginSpinner");
+
+            btn.disabled = isLoading;
+            btnText.style.display = isLoading ? "none" : "inline";
+            spinner.style.display = isLoading ? "inline-block" : "none";
+        }
+
+        // ========== LOCKOUT SYSTEM ==========
+        function checkLockout() {
+            const lockoutTime = localStorage.getItem("lockoutTime");
+            if (lockoutTime && Date.now() < parseInt(lockoutTime)) {
+                startLockoutTimer(parseInt(lockoutTime));
+                return true;
+            }
+            return false;
+        }
+
+        function startLockoutTimer(lockoutTime) {
+            const timerBox = document.getElementById("lockoutTimerBox");
+            const timerText = document.getElementById("lockoutTimer");
+            const loginForm = document.getElementById("loginForm");
+
+            timerBox.style.display = "block";
+            loginForm.style.display = "none";
+
+            const interval = setInterval(() => {
+                const remaining = lockoutTime - Date.now();
+
+                if (remaining <= 0) {
+                    clearInterval(interval);
+                    timerBox.style.display = "none";
+                    loginForm.style.display = "block";
+                    localStorage.removeItem("lockoutTime");
+                    localStorage.removeItem("loginAttempts");
+                } else {
+                    const minutes = Math.floor(remaining / 60000);
+                    const seconds = Math.floor((remaining % 60000) / 1000);
+                    timerText.textContent = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+                }
+            }, 1000);
+        }
+
+        function recordFailedAttempt() {
+            let attempts =
+                parseInt(localStorage.getItem("loginAttempts") || "0") + 1;
+            localStorage.setItem("loginAttempts", attempts);
+
+            if (attempts >= MAX_ATTEMPTS) {
+                const lockoutTime = Date.now() + LOCKOUT_TIME_MS;
+                localStorage.setItem("lockoutTime", lockoutTime);
+                startLockoutTimer(lockoutTime);
+                showAlert(
+                    "Çok fazla başarısız deneme! 15 dakika engellendiniz.",
+                    "warning",
+                );
+            } else {
+                const remaining = MAX_ATTEMPTS - attempts;
+                showAlert(`Hatalı giriş! ${remaining} hakkınız kaldı.`, "error");
+            }
+        }
+
+        // ========== GOOGLE LOGIN ==========
+        function googleLogin() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            provider.addScope("email");
+
+            setLoading(true);
+
+            auth
+                .signInWithPopup(provider)
+                .then((result) => {
+                    const user = result.user;
+                    const allowedEmails = [
+                        "umitjan.novruzov06@gmail.com",
+                        "admin@devonic.com",
+                    ];
+
+                    if (!allowedEmails.includes(user.email.toLowerCase())) {
+                        auth.signOut();
+                        showAlert("Bu Google hesabı yetkili değil!", "error");
+                        setLoading(false);
+                        return;
+                    }
+
+                    // Başarılı giriş
+                    localStorage.setItem("loginAttempts", "0");
+                    showAlert("Giriş başarılı! Yönlendiriliyorsunuz...", "success");
+                    setTimeout(() => {
+                        window.location.href = "admin.html";
+                    }, 1000);
+                })
+                .catch((error) => {
+                    setLoading(false);
+
+                    let msg = "Google giriş hatası!";
+                    if (error.code === "auth/unauthorized-domain") {
+                        msg =
+                            "Domain yetki hatası! Firebase Console ayarlarını kontrol edin.";
+                    } else if (error.code === "auth/popup-blocked") {
+                        msg = "Popup engellendi! Tarayıcı ayarlarından izin verin.";
+                    } else if (error.code === "auth/popup-closed-by-user") {
+                        return; // Kullanıcı popup'ı kapattı, hata gösterme
+                    }
+
+                    showAlert(msg, "error");
+                });
+        }
+
+        // ========== EMAIL/PASSWORD LOGIN ==========
+        function login() {
+            // Lockout kontrolü
+            if (checkLockout()) {
+                showAlert("Hala engellisiniz! Lütfen bekleyin.", "warning");
+                return;
+            }
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            if (!email || !password) {
+                showAlert("Lütfen tüm alanları doldurun!", "error");
+                return;
+            }
+
+            setLoading(true);
+
+            auth
+                .signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    localStorage.setItem("loginAttempts", "0");
+                    showAlert("Giriş başarılı! Yönlendiriliyorsunuz...", "success");
+                    setTimeout(() => {
+                        window.location.href = "admin.html";
+                    }, 1000);
+                })
+                .catch((err) => {
+                    setLoading(false);
+                    recordFailedAttempt();
+                });
+        }
+
+        // ========== GOOGLE REDIRECT RESULT ==========
+        auth
+            .getRedirectResult()
+            .then((result) => {
+                if (result && result.user) {
+                    const allowedEmails = [
+                        "umitjan.novruzov06@gmail.com",
+                        "admin@devonic.com",
+                    ];
+                    if (allowedEmails.includes(result.user.email.toLowerCase())) {
+                        window.location.href = "admin.html";
+                    } else {
+                        auth.signOut();
+                        showAlert("Bu Google hesabı yetkili değil!", "error");
+                    }
+                }
+            })
+            .catch((error) => {
+                if (error.code !== "auth/popup-closed-by-user") {
+                    showAlert("Hata: " + error.message, "error");
+                }
+            });
+
+        // ========== INIT ==========
+        window.addEventListener("DOMContentLoaded", () => {
+            checkLockout();
+
+            // Oturum durumu izleme
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    const allowedEmails = [
+                        "umitjan.novruzov06@gmail.com",
+                        "admin@devonic.com",
+                    ];
+                    if (allowedEmails.includes(user.email.toLowerCase())) {
+                        // Eğer auth.html'deyse admin'e yönlendir
+                        const currentFile = window.location.pathname.split("/").pop();
+                        if (currentFile === "auth.html") {
+                            window.location.replace("admin.html");
+                        }
+                    } else {
+                        auth.signOut();
+                        showAlert("YETKİSİZ ERİŞİM: " + user.email, "error");
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

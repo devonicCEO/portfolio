@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Security Headers -->
-    <meta http-equiv="X-Frame-Options" content="DENY" />
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
@@ -18,11 +17,12 @@
         rel="stylesheet" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik+Gemstones&display=swap" rel="stylesheet"> -->
-
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js"></script>
 
     <title>Umitjan | Full Stack Developer</title>
 </head>
@@ -159,118 +159,16 @@
             </div>
 
             <h3 class="skills-title">My Skills</h3>
-            <div class="skills-grid">
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="0">
-                    <img src="https://www.vhv.rs/dpng/d/208-2081301_python-programming-language-computer-programming-computer-python-programming.png"
-                        alt="Python" />
-                    <span>Python</span>
-                </div>
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="25">
-                    <img src="https://cdn.vectorstock.com/i/500p/93/15/html5-css3-javascript-icon-set-vector-29309315.jpg"
-                        alt="JavaScript" />
-                    <span>JavaScript</span>
-                </div>
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="50">
-                    <img src="https://d1uxiwmpc9j4yg.cloudfront.net/images/all/flutter5786_1687632217.jpeg"
-                        alt="Flutter" />
-                    <span>Flutter</span>
-                </div>
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="75">
-                    <img src="https://e7.pngegg.com/pngimages/210/105/png-clipart-c-c-computer-programming-javascript-others-miscellaneous-purple.png"
-                        alt="C#" />
-                    <span>C#</span>
-                </div>
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="100">
-                    <img src="https://archive.smashing.media/assets/344dbf88-fdf9-42bb-adb4-46f01eedd629/c082bb38-876b-4155-8da1-4d1c4b2eeb81/html5-logo-design-illu-opt.jpg"
-                        alt="HTML" />
-                    <span>HTML</span>
-                </div>
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="125">
-                    <img src="https://cdn.dribbble.com/userupload/20020796/file/original-b78639451a047ff5d6085fe5d5b4073c.png?resize=752x&vertical=center"
-                        alt="CSS" />
-                    <span>CSS</span>
-                </div>
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="150">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/27/PHP-logo.svg" alt="PHP" />
-                    <span>PHP</span>
-                </div>
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="175">
-                    <img src="https://1000logos.net/wp-content/uploads/2024/05/Firebase-Emblem.png" alt="Firebase" />
-                    <span>Firebase</span>
-                </div>
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="200">
-                    <img src="https://blogs.oracle.com/wp-content/uploads/sites/102/2025/11/MySQL_logo03.png"
-                        alt="MySQL" />
-                    <span>MySQL</span>
-                </div>
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="225">
-                    <img src="https://static.vecteezy.com/system/resources/previews/039/147/324/non_2x/mobile-app-development-icon-vector.jpg"
-                        alt="Mobile App" />
-                    <span>Mobile App</span>
-                </div>
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="250">
-                    <img src="https://learn.microsoft.com/en-us/windows/images/dev-environment-icon.png"
-                        alt="Windows App" />
-                    <span>Windows App</span>
-                </div>
-                <div class="skill-card" data-aos="flip-up" data-aos-delay="275">
-                    <img src="https://static.vecteezy.com/system/resources/previews/003/377/380/small/line-icon-for-web-develop-vector.jpg"
-                        alt="Web Development" />
-                    <span>Web Development</span>
-                </div>
+            <div class="skills-grid" id="skillsGrid">
+                <!-- Skills Firebase'den yüklenecek -->
             </div>
         </section>
 
         <!-- Projects Section -->
         <section id="projects" class="section">
             <h2 class="section-title">My Projects</h2>
-            <div class="projects-grid">
-                <!-- <div class="project-card">
-                    <img src="https://i.ytimg.com/vi/66dj7wqXfeA/sddefault.jpg" alt="Dark Mode Mobile App">
-                    <div class="project-overlay">
-                        <h3>Dark Mode Mobile App</h3>
-                        <p>Flutter ile geliştirilmiş modern dark theme mobil uygulama UI/UX projesi.</p>
-                        <div class="project-links">
-                            <a href="#" target="_blank">Live Demo</a>
-                            <a href="#" target="_blank">GitHub</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <img src="https://cdn.dribbble.com/userupload/19067227/file/original-78588b1e2b226a5317293ef67e6f380a.jpg?resize=400x0"
-                        alt="Neon Dashboard">
-                    <div class="project-overlay">
-                        <h3>Neon Admin Dashboard</h3>
-                        <p>React + CSS ile neon mor temalı modern web dashboard.</p>
-                        <div class="project-links">
-                            <a href="#" target="_blank">Live Demo</a>
-                            <a href="#" target="_blank">GitHub</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <img src="https://i.ytimg.com/vi/zj0W7vJ56cc/maxresdefault.jpg" alt="E-Commerce App">
-                    <div class="project-overlay">
-                        <h3>E-Commerce Mobile App</h3>
-                        <p>Flutter tabanlı tam fonksiyonel e-ticaret uygulaması UI.</p>
-                        <div class="project-links">
-                            <a href="#" target="_blank">Live Demo</a>
-                            <a href="#" target="_blank">GitHub</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-card">
-                    <img src="https://cdn.dribbble.com/userupload/6804167/file/original-212e4a4fa0e985b14f14cca1a7b7a4de.jpg?resize=400x0"
-                        alt="Neon Portfolio">
-                    <div class="project-overlay">
-                        <h3>Personal Neon Portfolio</h3>
-                        <p>HTML/CSS/JS ile neon dark mode kişisel portfolio sitesi (bu site gibi!).</p>
-                        <div class="project-links">
-                            <a href="#" target="_blank">Live Demo</a>
-                            <a href="#" target="_blank">GitHub</a>
-                        </div>
-                    </div>
-                </div> -->
+            <div class="projects-grid" id="projectsGrid">
+                <!-- Projects Firebase'den yüklenecek -->
             </div>
         </section>
 
@@ -388,7 +286,125 @@
                 const clone = content.cloneNode(true);
                 wrapper.appendChild(clone);
             }
+
+            // Skills Firebase'den yükle
+            loadSkills();
+            // Projects Firebase'den yükle
+            loadProjects();
         });
+
+        // Firebase'den Skills Yükle (Realtime)
+        function loadSkills() {
+            if (typeof db === "undefined") {
+                console.log("Firebase yüklenemedi, skills yüklenemedi.");
+                return;
+            }
+
+            const skillsGrid = document.getElementById("skillsGrid");
+
+            // Realtime listener
+            db.collection("skills")
+                .orderBy("createdAt", "asc")
+                .onSnapshot(
+                    (snapshot) => {
+                        skillsGrid.innerHTML = ""; // Temizle
+
+                        if (snapshot.empty) {
+                            skillsGrid.innerHTML =
+                                '<p style="grid-column: 1/-1; text-align: center; color: #a8a8b3;">Henüz skill eklenmemiş.</p>';
+                            return;
+                        }
+
+                        let delay = 0;
+                        snapshot.forEach((doc) => {
+                            const skill = doc.data();
+                            const skillCard = document.createElement("div");
+                            skillCard.className = "skill-card";
+                            skillCard.setAttribute("data-aos", "flip-up");
+                            skillCard.setAttribute("data-aos-delay", delay);
+
+                            skillCard.innerHTML = `
+                        <img src="${skill.imageUrl}" alt="${skill.title}" />
+                        <span>${skill.title}</span>
+                    `;
+
+                            skillsGrid.appendChild(skillCard);
+                            delay += 25;
+                        });
+
+                        // AOS'u yeniden başlat
+                        if (typeof AOS !== "undefined") {
+                            AOS.refresh();
+                        }
+                    },
+                    (error) => {
+                        console.error("Skills yüklenemedi:", error);
+                        skillsGrid.innerHTML =
+                            '<p style="grid-column: 1/-1; text-align: center; color: #ff4444;">Skills yüklenirken hata oluştu.</p>';
+                    },
+                );
+        }
+
+        // Firebase'den Projects Yükle (Realtime)
+        function loadProjects() {
+            if (typeof db === "undefined") {
+                console.log("Firebase yüklenemedi, projects yüklenemedi.");
+                return;
+            }
+
+            const projectsGrid = document.getElementById("projectsGrid");
+
+            // Realtime listener
+            db.collection("projects")
+                .orderBy("createdAt", "desc")
+                .onSnapshot(
+                    (snapshot) => {
+                        projectsGrid.innerHTML = ""; // Temizle
+
+                        if (snapshot.empty) {
+                            projectsGrid.innerHTML =
+                                '<p style="grid-column: 1/-1; text-align: center; color: #a8a8b3;">Henüz proje eklenmemiş.</p>';
+                            return;
+                        }
+
+                        snapshot.forEach((doc) => {
+                            const project = doc.data();
+                            const imageUrl =
+                                project.coverImage ||
+                                project.imageUrl ||
+                                (project.images && project.images[0]) ||
+                                "";
+                            const projectCard = document.createElement("div");
+                            projectCard.className = "project-card";
+                            projectCard.setAttribute("data-aos", "fade-up");
+                            projectCard.style.cursor = "pointer";
+                            projectCard.onclick = () => {
+                                window.location.href = `projeler-detay.html?id=${doc.id}`;
+                            };
+
+                            projectCard.innerHTML = `
+                                <img src="${imageUrl}" alt="${project.name}" />
+                                <div class="project-content">
+                                    <h3>${project.name}</h3>
+                                    <p>${project.description.substring(0, 100)}${project.description.length > 100 ? "..." : ""}</p>
+                                </div>
+                            `;
+
+                            projectsGrid.appendChild(projectCard);
+                        });
+
+                        // AOS'u yeniden başlat
+                        if (typeof AOS !== "undefined") {
+                            AOS.refresh();
+                        }
+                    },
+                    (error) => {
+                        console.error("Projects yüklenemedi:", error);
+                        projectsGrid.innerHTML =
+                            '<p style="grid-column: 1/-1; text-align: center; color: #ff4444;">Projects yüklenirken hata oluştu.</p>';
+                    },
+                );
+        }
     </script>
 </body>
 
