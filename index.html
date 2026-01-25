@@ -115,7 +115,7 @@
                             </div>
                             <div class="skill-item">
                                 <img src="https://www.onesignal.com/images/logo-square.png" alt="OneSignal"
-                                    style="background: #fff; padding: 8px" />
+                                    class="onesignal-img" />
                                 <span>OneSignal</span>
                             </div>
                         </div>
@@ -215,7 +215,7 @@
                 </form>
 
                 <!-- Başarı / hata mesajı -->
-                <div id="formMessage" style="margin-top: 30px; font-size: 1.3rem; text-align: center"></div>
+                <div id="formMessage" class="form-message"></div>
             </div>
         </section>
 
@@ -370,7 +370,7 @@
 
                         if (snapshot.empty) {
                             skillsGrid.innerHTML =
-                                '<p style="grid-column: 1/-1; text-align: center; color: #a8a8b3;">Henüz skill eklenmemiş.</p>';
+                                '<p class="skills-empty">Henüz skill eklenmemiş.</p>';
                             return;
                         }
 
@@ -399,7 +399,7 @@
                     (error) => {
                         console.error("Skills yüklenemedi:", error);
                         skillsGrid.innerHTML =
-                            '<p style="grid-column: 1/-1; text-align: center; color: #ff4444;">Skills yüklenirken hata oluştu.</p>';
+                            '<p class="skills-error">Skills yüklenirken hata oluştu.</p>';
                     },
                 );
         }
@@ -422,7 +422,7 @@
 
                         if (snapshot.empty) {
                             projectsGrid.innerHTML =
-                                '<p style="grid-column: 1/-1; text-align: center; color: #a8a8b3;">Henüz proje eklenmemiş.</p>';
+                                '<p class="projects-empty">Henüz proje eklenmemiş.</p>';
                             return;
                         }
 
@@ -467,7 +467,7 @@
                     (error) => {
                         console.error("Projects yüklenemedi:", error);
                         projectsGrid.innerHTML =
-                            '<p style="grid-column: 1/-1; text-align: center; color: #ff4444;">Projects yüklenirken hata oluştu.</p>';
+                            '<p class="projects-error">Projects yüklenirken hata oluştu.</p>';
                     },
                 );
         }

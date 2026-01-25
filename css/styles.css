@@ -1,47 +1,45 @@
-.explore-btn-content {
+/* Inline'dan taşınan özel stiller */
+.onesignal-img {
+  background: #fff;
+  padding: 8px;
+}
+
+.form-message {
+  margin-top: 30px;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.projects-empty {
+  grid-column: 1/-1;
+  text-align: center;
+  color: #a8a8b3;
+}
+.skills-empty {
+  grid-column: 1/-1;
+  text-align: center;
+  color: #a8a8b3;
+}
+.skills-error {
+  grid-column: 1/-1;
+  text-align: center;
+  color: #ff4444;
+}
+.projects-error {
+  grid-column: 1/-1;
+  text-align: center;
+  color: #ff4444;
+}
+.explore-btn span {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.98rem;
-  font-weight: 600;
-}
-
-.explore-icon {
-  display: inline-block;
-  vertical-align: middle;
-  margin-left: 2px;
-}
-
-.explore-btn {
-  display: inline-block;
-  margin-top: 10px;
-  margin-bottom: 0;
-  padding: 6px 16px;
-  background: #bc13fe;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background 0.2s,
-    color 0.2s,
-    box-shadow 0.2s;
-  box-shadow: 0 2px 8px rgba(188, 19, 254, 0.08);
-  min-width: 90px;
-}
-
-.explore-btn:hover,
-.explore-btn:focus {
-  background: #fff;
-  color: #bc13fe;
-  box-shadow: 0 4px 16px rgba(188, 19, 254, 0.18);
-  outline: none;
+  gap: 8px;
+  justify-content: center;
 }
 
 /* Project Card Margin for Grid */
 .project-card {
+  margin-bottom: 32px;
 }
 /* Explore Button for Project Cards */
 .explore-btn {
@@ -55,7 +53,6 @@
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  margin-bottom: 32px;
   transition:
     background 0.2s,
     color 0.2s,
