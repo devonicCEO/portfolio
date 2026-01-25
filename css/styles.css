@@ -1,3 +1,29 @@
+/* Explore Button for Project Cards */
+.explore-btn {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 8px 24px;
+  background: #bc13fe;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    color 0.2s,
+    box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(188, 19, 254, 0.08);
+}
+
+.explore-btn:hover,
+.explore-btn:focus {
+  background: #fff;
+  color: #bc13fe;
+  box-shadow: 0 4px 16px rgba(188, 19, 254, 0.18);
+  outline: none;
+}
 /* Navigation Bar */
 .navbar {
   position: fixed;
