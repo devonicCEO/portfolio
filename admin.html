@@ -117,6 +117,10 @@
                     <i class="fas fa-envelope"></i>
                     <span>Mesajlar</span>
                 </a>
+                <a href="#certificates" class="nav-item" data-page="certificates">
+                    <i class="fas fa-certificate"></i>
+                    <span>Sertifikalar</span>
+                </a>
             </nav>
 
             <div class="sidebar-footer">
@@ -329,6 +333,73 @@
                 </div>
             </section>
         </main>
+
+        <!-- Certificates Page -->
+        <section id="certificates-page" class="page">
+            <div class="page-header"
+                style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+                <h2 style="margin: 0;">Sertifikalar</h2>
+                <button onclick="showAddCertificateModal()" class="btn-primary" style="min-width: 180px;">
+                    <i class="fas fa-plus"></i> Yeni Sertifika
+                </button>
+            </div>
+            <div id="certificatesList" class="certificates-grid">
+                <!-- Sertifikalar burada listelenecek -->
+            </div>
+        </section>
+
+        <!-- Add Certificate Modal -->
+        <div id="certificateModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Yeni Sertifika Ekle</h3>
+                    <button onclick="closeModal('certificateModal')" class="close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="certificateForm" onsubmit="event.preventDefault(); saveCertificate();">
+                    <div class="form-group">
+                        <label>Sertifika Başlığı *</label>
+                        <input type="text" id="certificateTitle" required placeholder="Örn: Google Analytics" />
+                    </div>
+                    <div class="form-group">
+                        <label>Alınma Tarihi *</label>
+                        <input type="date" id="certificateDate" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Kurum *</label>
+                        <input type="text" id="certificateIssuer" required
+                            placeholder="Örn: Google, Udemy, Microsoft" />
+                    </div>
+                    <div class="form-group">
+                        <label>Kim Tarafından Alındı *</label>
+                        <input type="text" id="certificateOwner" required placeholder="Örn: Umitjan Novruzov" />
+                    </div>
+                    <div class="form-group">
+                        <label>Sertifika Linki</label>
+                        <input type="url" id="certificateUrl" placeholder="https://..." />
+                    </div>
+                    <div class="form-group">
+                        <label>Sertifika Görseli *</label>
+                        <input type="hidden" id="certificatePhotoUrl" required />
+                        <button type="button" onclick="uploadPhoto('certificate')" class="btn-secondary"
+                            style="width: 100%; margin-bottom: 10px">
+                            <i class="fas fa-cloud-upload-alt"></i> Görsel Yükle
+                        </button>
+                        <img id="certificatePreview"
+                            style="display: none; width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px; margin-top: 10px;" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" onclick="closeModal('certificateModal')"
+                            class="btn-secondary">İptal</button>
+                        <button type="submit" class="btn-primary">
+                            <span id="saveCertificateText">Kaydet</span>
+                            <span id="saveCertificateSpinner" class="spinner" style="display: none"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <!-- Add Project Modal -->
         <div id="projectModal" class="modal">
@@ -587,6 +658,7 @@
                         skills: "Skills",
                         visitors: "Ziyaretçi İstatistikleri",
                         messages: "İletişim Mesajları",
+                        certificates: "Sertifikalar",
                     };
                     document.getElementById("pageTitle").textContent = titles[page];
 
@@ -595,6 +667,7 @@
                     if (page === "skills") loadSkills();
                     if (page === "visitors") loadVisitorStats();
                     if (page === "messages") loadMessages();
+                    if (page === "certificates") loadCertificates();
                 });
             });
 
@@ -1098,6 +1171,128 @@
             }
 
             // Modal Functions
+            // Certificates Functions
+            let editCertificateId = null;
+
+            function showAddCertificateModal() {
+                editCertificateId = null;
+                document.querySelector("#certificateModal .modal-header h3").textContent = "Yeni Sertifika Ekle";
+                document.getElementById("certificateModal").classList.add("show");
+                document.getElementById("certificateForm").reset();
+                document.getElementById("certificatePhotoUrl").value = "";
+                document.getElementById("certificatePreview").style.display = "none";
+            }
+
+            function loadCertificates() {
+                const list = document.getElementById("certificatesList");
+                list.innerHTML = '<div class="loading">Yükleniyor...</div>';
+                db.collection("certificates")
+                    .orderBy("date", "desc")
+                    .get()
+                    .then((snapshot) => {
+                        if (snapshot.empty) {
+                            list.innerHTML = '<div class="empty-state">Henüz sertifika eklenmemiş.</div>';
+                            return;
+                        }
+                        list.innerHTML = "";
+                        snapshot.forEach((doc) => {
+                            const data = doc.data();
+                            list.innerHTML += `
+                            <div class="project-card certificate-card">
+                                <img src="${data.imageUrl}" alt="${data.title}" />
+                                <div class="project-info certificate-info">
+                                    <h3>${data.title}</h3>
+                                    <p><b>Tarih:</b> ${data.date}</p>
+                                    <p><b>Kurum:</b> ${data.issuer}</p>
+                                    <p><b>Kimden:</b> ${data.owner}</p>
+                                    ${data.url ? `<a href="${data.url}" target="_blank">Sertifika Linki</a>` : ""}
+                                    <div class="card-actions">
+                                        <button onclick="editCertificate('${doc.id}')" class="btn-edit" title="Düzenle"><i class="fas fa-edit"></i></button>
+                                        <button onclick="deleteCertificate('${doc.id}')" class="btn-delete" title="Sil"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                                        `;
+                        });
+                    })
+                    .catch((err) => {
+                        list.innerHTML = '<div class="error">Yükleme hatası: ' + err.message + "</div>";
+                    });
+            }
+
+            async function saveCertificate() {
+                const title = document.getElementById("certificateTitle").value.trim();
+                const date = document.getElementById("certificateDate").value;
+                const issuer = document.getElementById("certificateIssuer").value.trim();
+                const owner = document.getElementById("certificateOwner").value.trim();
+                const url = document.getElementById("certificateUrl").value.trim();
+                const imageUrl = document.getElementById("certificatePhotoUrl").value;
+
+                if (!title || !date || !issuer || !owner || !imageUrl) {
+                    alert("Lütfen zorunlu alanları doldurun!");
+                    return;
+                }
+
+                document.getElementById("saveCertificateText").style.display = "none";
+                document.getElementById("saveCertificateSpinner").style.display = "inline-block";
+
+                try {
+                    const certData = { title, date, issuer, owner, imageUrl };
+                    if (url) certData.url = url;
+                    if (editCertificateId) {
+                        await db.collection("certificates").doc(editCertificateId).update(certData);
+                        alert("Sertifika başarıyla güncellendi!");
+                    } else {
+                        await db.collection("certificates").add(certData);
+                        alert("Sertifika başarıyla eklendi!");
+                    }
+                    closeModal("certificateModal");
+                    loadCertificates();
+                } catch (error) {
+                    alert("Hata: " + error.message);
+                } finally {
+                    document.getElementById("saveCertificateText").style.display = "inline";
+                    document.getElementById("saveCertificateSpinner").style.display = "none";
+                }
+            }
+
+            async function editCertificate(id) {
+                editCertificateId = id;
+                document.querySelector("#certificateModal .modal-header h3").textContent = "Sertifikayı Düzenle";
+                try {
+                    const doc = await db.collection("certificates").doc(id).get();
+                    if (!doc.exists) {
+                        alert("Sertifika bulunamadı!");
+                        return;
+                    }
+                    const data = doc.data();
+                    document.getElementById("certificateTitle").value = data.title || "";
+                    document.getElementById("certificateDate").value = data.date || "";
+                    document.getElementById("certificateIssuer").value = data.issuer || "";
+                    document.getElementById("certificateOwner").value = data.owner || "";
+                    document.getElementById("certificateUrl").value = data.url || "";
+                    document.getElementById("certificatePhotoUrl").value = data.imageUrl || "";
+                    if (data.imageUrl) {
+                        document.getElementById("certificatePreview").src = data.imageUrl;
+                        document.getElementById("certificatePreview").style.display = "block";
+                    } else {
+                        document.getElementById("certificatePreview").style.display = "none";
+                    }
+                    document.getElementById("certificateModal").classList.add("show");
+                } catch (error) {
+                    alert("Sertifika yüklenemedi: " + error.message);
+                }
+            }
+
+            function deleteCertificate(id) {
+                if (!confirm("Bu sertifikayı silmek istediğinize emin misiniz?")) return;
+                db.collection("certificates").doc(id).delete()
+                    .then(() => {
+                        alert("Sertifika silindi!");
+                        loadCertificates();
+                    })
+                    .catch((err) => alert("Hata: " + err.message));
+            }
             function closeModal(modalId) {
                 document.getElementById(modalId).classList.remove("show");
             }
