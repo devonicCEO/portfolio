@@ -142,6 +142,11 @@
   color: #000;
 }
 
+#vurgu {
+  color: #bc13fe;
+  font-weight: 600;
+}
+
 /* Hamburger Menu */
 .hamburger {
   display: none;
