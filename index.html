@@ -44,8 +44,7 @@
 
             <!-- Desktop Menu -->
             <ul class="nav-menu">
-                <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#about" class="nav-link">Portfolio</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
             </ul>
 
@@ -159,46 +158,69 @@
             </div>
         </div>
 
-        <!-- About Me Section -->
-        <section id="about" class="section">
-            <h2 class="section-title">About Me</h2>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>
-                        Hello! I'm Umitjan, a developer from Turkmenistan. I stepped into
-                        the world of programming at the age of <strong>14</strong>, and
-                        since then, I've been passionately advancing in this field.
-                    </p>
-                    <p>
-                        Currently, I work fluently with technologies like
-                        <strong>Python, C#, JavaScript, Flutter, Firebase, MySQL, HTML, CSS,
-                            Cloudinary, and OneSignal</strong>.
-                    </p>
-                    <p>
-                        I have experience in mobile development (Flutter), web development
-                        (HTML/CSS/JS), and backend (Python/C#/Firebase). I always focus on
-                        writing clean code, designing user-friendly interfaces, and
-                        building high-performance applications.
-                    </p>
-                    <p>
-                        My goal is to create innovative and impressive projects with
-                        strong technical knowledge. Every new project is an opportunity
-                        for me to learn and improve myself.
-                    </p>
+        <!-- Portfolio Section with Filters -->
+        <section id="about" class="section portfolio-section">
+            <h2 class="section-title">My Portfolio</h2>
+
+            <!-- Filter Buttons -->
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="about">About Me</button>
+                <button class="filter-btn" data-filter="projects">Projects</button>
+                <button class="filter-btn" data-filter="skills">Skills</button>
+                <button class="filter-btn" data-filter="certificates">Certificates</button>
+            </div>
+
+            <!-- Content Sections -->
+            <div class="portfolio-content">
+                <!-- About Me Content -->
+                <div class="content-section active" data-section="about">
+                    <div class="about-content">
+                        <div class="about-text">
+                            <p>
+                                Hello! I'm Umitjan, a developer from Turkmenistan. I stepped into
+                                the world of programming at the age of <strong>14</strong>, and
+                                since then, I've been passionately advancing in this field.
+                            </p>
+                            <p>
+                                Currently, I work fluently with technologies like
+                                <strong>Python, C#, JavaScript, Flutter, Firebase, MySQL, HTML, CSS,
+                                    Cloudinary, and OneSignal</strong>.
+                            </p>
+                            <p>
+                                I have experience in mobile development (Flutter), web development
+                                (HTML/CSS/JS), and backend (Python/C#/Firebase). I always focus on
+                                writing clean code, designing user-friendly interfaces, and
+                                building high-performance applications.
+                            </p>
+                            <p>
+                                My goal is to create innovative and impressive projects with
+                                strong technical knowledge. Every new project is an opportunity
+                                for me to learn and improve myself.
+                            </p>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <h3 class="skills-title">My Skills</h3>
-            <div class="skills-grid" id="skillsGrid">
-                <!-- Skills Firebase'den yüklenecek -->
-            </div>
-        </section>
+                <!-- Projects Content -->
+                <div class="content-section" data-section="projects" id="projects">
+                    <div class="projects-grid" id="projectsGrid">
+                        <!-- Projects Firebase'den yüklenecek -->
+                    </div>
+                </div>
 
-        <!-- Projects Section -->
-        <section id="projects" class="section">
-            <h2 class="section-title">My Projects</h2>
-            <div class="projects-grid" id="projectsGrid">
-                <!-- Projects Firebase'den yüklenecek -->
+                <!-- Skills Content -->
+                <div class="content-section" data-section="skills">
+                    <div class="skills-grid" id="skillsGrid">
+                        <!-- Skills Firebase'den yüklenecek -->
+                    </div>
+                </div>
+
+                <!-- Certificates Content -->
+                <div class="content-section" data-section="certificates">
+                    <div class="certificates-grid" id="certificatesGrid">
+                        <p class="certificates-empty">Sertifikalar yakında eklenecek...</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -350,6 +372,9 @@
             loadSkills();
             // Projects Firebase'den yükle
             loadProjects();
+
+            // Filter functionality
+            initializeFilters();
         });
 
         // Firebase'den Skills Yükle (Realtime)
@@ -470,6 +495,39 @@
                             '<p class="projects-error">Projects yüklenirken hata oluştu.</p>';
                     },
                 );
+        }
+
+        // Filter functionality
+        function initializeFilters() {
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const contentSections = document.querySelectorAll('.content-section');
+
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remove active from all buttons
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    // Add active to clicked button
+                    btn.classList.add('active');
+
+                    const filterValue = btn.getAttribute('data-filter');
+
+                    // Hide all sections
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+
+                    // Show selected section
+                    const targetSection = document.querySelector(`[data-section="${filterValue}"]`);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+
+                        // AOS refresh for animations
+                        if (typeof AOS !== 'undefined') {
+                            AOS.refresh();
+                        }
+                    }
+                });
+            });
         }
     </script>
 </body>

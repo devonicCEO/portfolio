@@ -468,6 +468,89 @@ body::before {
   line-height: 2;
 }
 
+/* Portfolio Section with Filters */
+.portfolio-section {
+  padding: 120px 0;
+}
+
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
+}
+
+.filter-btn {
+  padding: 12px 35px;
+  background: rgba(188, 19, 254, 0.1);
+  border: 2px solid rgba(188, 19, 254, 0.4);
+  border-radius: 50px;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: "Montserrat", sans-serif;
+}
+
+.filter-btn:hover {
+  background: rgba(188, 19, 254, 0.2);
+  border-color: #bc13fe;
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(188, 19, 254, 0.3);
+}
+
+.filter-btn.active {
+  background: #bc13fe;
+  color: #000;
+  border-color: #bc13fe;
+  box-shadow: 0 5px 20px rgba(188, 19, 254, 0.5);
+}
+
+.portfolio-content {
+  width: 100%;
+  min-height: 400px;
+}
+
+.content-section {
+  display: none;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.content-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.certificates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-items: center;
+}
+
+.certificates-empty {
+  grid-column: 1/-1;
+  text-align: center;
+  color: #a8a8b3;
+  font-size: 1.2rem;
+  padding: 60px 20px;
+}
+
 /* Skills grid */
 .skills-grid {
   display: grid;
@@ -798,5 +881,30 @@ body::before {
   .contact-item img {
     width: 28px;
     height: 28px;
+  }
+}
+
+/* Responsive for Filter Buttons */
+@media (max-width: 768px) {
+  .filter-buttons {
+    gap: 12px;
+    padding: 0 20px;
+  }
+
+  .filter-btn {
+    padding: 10px 25px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-btn {
+    padding: 8px 20px;
+    font-size: 0.9rem;
+  }
+
+  .certificates-empty {
+    font-size: 1rem;
+    padding: 40px 15px;
   }
 }
