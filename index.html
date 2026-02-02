@@ -413,17 +413,35 @@
                             const skill = doc.data();
                             const skillCard = document.createElement("div");
                             skillCard.className = "skill-card";
-                            skillCard.setAttribute("data-aos", "flip-up");
+                            skillCard.setAttribute("data-aos", "fade-up");
                             skillCard.setAttribute("data-aos-delay", delay);
 
+                            const percentage = skill.percentage || 0;
+
                             skillCard.innerHTML = `
-                        <img src="${skill.imageUrl}" alt="${skill.title}" />
-                        <span>${skill.title}</span>
+                        <div class="skill-header">
+                            <div class="skill-info">
+                                <img src="${skill.imageUrl}" alt="${skill.title}" class="skill-icon" />
+                                <span class="skill-name">${skill.title}</span>
+                            </div>
+                            <span class="skill-percentage">${percentage}%</span>
+                        </div>
+                        <div class="skill-progress-bar">
+                            <div class="skill-progress-fill" style="width: 0%" data-target="${percentage}"></div>
+                        </div>
                     `;
 
                             skillsGrid.appendChild(skillCard);
-                            delay += 25;
+                            delay += 50;
                         });
+
+                        // Animate progress bars
+                        setTimeout(() => {
+                            document.querySelectorAll('.skill-progress-fill').forEach(bar => {
+                                const target = bar.getAttribute('data-target');
+                                bar.style.width = target + '%';
+                            });
+                        }, 100);
 
                         // AOS'u yeniden başlat
                         if (typeof AOS !== "undefined") {

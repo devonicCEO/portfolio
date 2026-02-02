@@ -508,6 +508,11 @@
                     </div>
 
                     <div class="form-group">
+                        <label>Yüzde (%) *</label>
+                        <input type="number" id="skillPercentage" required placeholder="Örn: 80" min="0" max="100" />
+                    </div>
+
+                    <div class="form-group">
                         <label>Skill İkonu/Resmi</label>
                         <input type="hidden" id="skillPhotoUrl" required />
                         <button type="button" onclick="uploadPhoto('skill')" class="btn-secondary"
@@ -1116,10 +1121,16 @@
 
             async function saveSkill() {
                 const title = document.getElementById("skillTitle").value.trim();
+                const percentage = parseInt(document.getElementById("skillPercentage").value);
                 const imageUrl = document.getElementById("skillPhotoUrl").value;
 
-                if (!title || !imageUrl) {
+                if (!title || !imageUrl || !percentage) {
                     alert("Lütfen tüm alanları doldurun!");
+                    return;
+                }
+
+                if (percentage < 0 || percentage > 100) {
+                    alert("Yüzde değeri 0-100 arasında olmalıdır!");
                     return;
                 }
 
@@ -1133,6 +1144,7 @@
                     await db.collection("skills").add({
                         title,
                         imageUrl,
+                        percentage,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     });
 
