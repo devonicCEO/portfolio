@@ -336,14 +336,13 @@
 
         <!-- Certificates Page -->
         <section id="certificates-page" class="page">
-            <div class="page-header"
-                style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
-                <h2 style="margin: 0;">Sertifikalar</h2>
-                <button onclick="showAddCertificateModal()" class="btn-primary" style="min-width: 180px;">
+            <div class="page-header">
+                <h2>Sertifikalar</h2>
+                <button onclick="showAddCertificateModal()" class="btn-primary">
                     <i class="fas fa-plus"></i> Yeni Sertifika
                 </button>
             </div>
-            <div id="certificatesList" class="certificates-grid">
+            <div id="certificatesList" class="projects-grid">
                 <!-- Sertifikalar burada listelenecek -->
             </div>
         </section>
@@ -1210,9 +1209,9 @@
                         snapshot.forEach((doc) => {
                             const data = doc.data();
                             list.innerHTML += `
-                            <div class="project-card certificate-card">
+                            <div class="project-card">
                                 <img src="${data.imageUrl}" alt="${data.title}" />
-                                <div class="project-info certificate-info">
+                                <div class="project-info">
                                     <h3>${data.title}</h3>
                                     <p><b>Tarih:</b> ${data.date}</p>
                                     <p><b>Kurum:</b> ${data.issuer}</p>
