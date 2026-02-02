@@ -12,6 +12,9 @@
 
     <link rel="stylesheet" href="css/styles.css" />
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
     <link
         href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;700&family=Montserrat:wght@400;600;700&display=swap"
         rel="stylesheet" />
@@ -177,14 +180,17 @@
                     <div class="about-content">
                         <div class="about-text">
                             <p>
-                                Hi! I'm <span id="vurgu">Umitjan Novruzov</span> — Founder of <span id="vurgu">Devonic</span> &
+                                Hi! I'm <span id="vurgu">Umitjan Novruzov</span> — Founder of <span
+                                    id="vurgu">Devonic</span> &
                                 Full
                                 Stack Developer 🚀
                             </p>
                             <p>
                                 My software journey began at the age of 14, and since then, I have been creating digital
-                                solutions that make a difference. Currently, I am working as a <span id="vurgu">Full Stack Developer</span> at
-                                Istanbul-based <span id="vurgu">Torem Insaat</span>, while simultaneously developing innovative projects under
+                                solutions that make a difference. Currently, I am working as a <span id="vurgu">Full
+                                    Stack Developer</span> at
+                                Istanbul-based <span id="vurgu">Torem Insaat</span>, while simultaneously developing
+                                innovative projects under
                                 my own brand, <span id="vurgu"></span>Devonic</span>.
                             </p>
                             <p>
@@ -373,6 +379,8 @@
             loadSkills();
             // Projects Firebase'den yükle
             loadProjects();
+            // Certificates Firebase'den yükle
+            loadCertificates();
 
             // Filter functionality
             initializeFilters();
@@ -494,6 +502,68 @@
                         console.error("Projects yüklenemedi:", error);
                         projectsGrid.innerHTML =
                             '<p class="projects-error">Projects yüklenirken hata oluştu.</p>';
+                    },
+                );
+        }
+
+        // Firebase'den Certificates Yükle (Realtime)
+        function loadCertificates() {
+            if (typeof db === "undefined") {
+                console.log("Firebase yüklenemedi, certificates yüklenemedi.");
+                return;
+            }
+
+            const certificatesGrid = document.getElementById("certificatesGrid");
+
+            // Realtime listener
+            db.collection("certificates")
+                .orderBy("date", "desc")
+                .onSnapshot(
+                    (snapshot) => {
+                        certificatesGrid.innerHTML = ""; // Temizle
+
+                        if (snapshot.empty) {
+                            certificatesGrid.innerHTML =
+                                '<p class="certificates-empty">Henüz sertifika eklenmemiş.</p>';
+                            return;
+                        }
+
+                        let delay = 0;
+                        snapshot.forEach((doc) => {
+                            const cert = doc.data();
+                            const certCard = document.createElement("div");
+                            certCard.className = "certificate-card";
+                            certCard.setAttribute("data-aos", "zoom-in");
+                            certCard.setAttribute("data-aos-delay", delay);
+
+                            certCard.innerHTML = `
+                        <div class="certificate-image">
+                            <img src="${cert.imageUrl}" alt="${cert.title}" />
+                        </div>
+                        <div class="certificate-content">
+                            <h3>${cert.title}</h3>
+                            <p class="certificate-issuer"><i class="fas fa-building"></i> ${cert.issuer}</p>
+                            <p class="certificate-date"><i class="fas fa-calendar"></i> ${cert.date}</p>
+                            <p class="certificate-owner"><i class="fas fa-user"></i> ${cert.owner}</p>
+                            ${cert.url ? `<a href="${cert.url}" target="_blank" rel="noopener noreferrer" class="certificate-link">
+                                <i class="fas fa-external-link-alt"></i> Sertifikayı Görüntüle
+                            </a>` : ''}
+                        </div>
+                    `;
+
+                            certificatesGrid.appendChild(certCard);
+                            delay += 100;
+                        });
+
+                        // AOS'u yeniden başlat
+                        if (typeof AOS !== "undefined") {
+                            AOS.refresh();
+                        }
+                    },
+                    (error) => {
+                        console.error("Certificates yüklenemedi:", error);
+                        certificatesGrid.innerHTML =
+                            '<p class="certificates-error">Sertifikalar yüklenirken hata oluştu.</p>';
                     },
                 );
         }

@@ -30,6 +30,18 @@
   text-align: center;
   color: #ff4444;
 }
+.certificates-empty {
+  grid-column: 1/-1;
+  text-align: center;
+  color: #a8a8b3;
+  font-size: 1.2rem;
+  padding: 60px 20px;
+}
+.certificates-error {
+  grid-column: 1/-1;
+  text-align: center;
+  color: #ff4444;
+}
 .explore-btn span {
   display: inline-flex;
   align-items: center;
@@ -548,6 +560,115 @@ body::before {
   justify-items: center;
 }
 
+.certificate-card {
+  width: 100%;
+  max-width: 350px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 20px;
+  border: 1px solid rgba(188, 19, 254, 0.3);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.certificate-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(188, 19, 254, 0.4);
+  border-color: #bc13fe;
+  background: rgba(188, 19, 254, 0.1);
+}
+
+.certificate-image {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  border-radius: 20px 20px 0 0;
+}
+
+.certificate-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.certificate-card:hover .certificate-image img {
+  transform: scale(1.1);
+}
+
+.certificate-content {
+  padding: 25px;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.certificate-content h3 {
+  font-size: 1.4rem;
+  color: #bc13fe;
+  margin: 0 0 15px 0;
+  font-weight: 700;
+}
+
+.certificate-content p {
+  font-size: 1rem;
+  color: #e0e0e0;
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.certificate-content p i {
+  color: #bc13fe;
+  font-size: 0.9rem;
+}
+
+.certificate-issuer {
+  font-weight: 600;
+}
+
+.certificate-date {
+  opacity: 0.8;
+  font-size: 0.95rem;
+}
+
+.certificate-owner {
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.certificate-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(188, 19, 254, 0.2);
+  border: 1px solid rgba(188, 19, 254, 0.5);
+  border-radius: 50px;
+  color: #bc13fe;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+}
+
+.certificate-link:hover {
+  background: #bc13fe;
+  color: #000;
+  border-color: #bc13fe;
+  box-shadow: 0 5px 15px rgba(188, 19, 254, 0.3);
+}
+
+.certificate-link i {
+  font-size: 0.85rem;
+}
+
 .certificates-empty {
   grid-column: 1/-1;
   text-align: center;
@@ -911,5 +1032,22 @@ body::before {
   .certificates-empty {
     font-size: 1rem;
     padding: 40px 15px;
+  }
+
+  .certificate-card {
+    max-width: 100%;
+  }
+
+  .certificate-content h3 {
+    font-size: 1.2rem;
+  }
+
+  .certificate-content p {
+    font-size: 0.9rem;
+  }
+
+  .certificate-link {
+    font-size: 0.85rem;
+    padding: 8px 16px;
   }
 }
