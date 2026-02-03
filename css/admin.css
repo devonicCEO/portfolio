@@ -1,91 +1,3 @@
-/* Sertifikalar için özel düzenlemeler */
-#certificates-page .project-card {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 18px;
-  min-height: auto;
-}
-
-#certificates-page .project-card img {
-  width: 120px;
-  height: 120px;
-  flex-shrink: 0;
-  border-radius: 8px;
-  object-fit: cover;
-}
-
-#certificates-page .project-info {
-  flex: 1;
-  min-width: 0;
-  padding: 0;
-}
-
-#certificates-page .project-info h3 {
-  text-align: left;
-  margin-bottom: 8px;
-}
-
-#certificates-page .project-info p {
-  font-size: 0.9rem;
-  margin: 4px 0;
-  -webkit-line-clamp: unset;
-}
-
-#certificates-page .project-info a {
-  color: var(--primary);
-  text-decoration: none;
-  font-size: 0.9rem;
-  display: inline-block;
-  margin-top: 8px;
-}
-
-#certificates-page .project-info a:hover {
-  text-decoration: underline;
-}
-
-@media (max-width: 900px) {
-  #certificates-page .projects-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 600px) {
-  #certificates-page .project-card {
-    flex-direction: column;
-  }
-
-  #certificates-page .project-card img {
-    width: 100%;
-    height: 180px;
-  }
-}
-
-/* ========== RESET & BASE ========== */
-* {
-  color: var(--primary);
-  font-size: 1.1rem;
-}
-
-.certificate-info p {
-  margin: 0 0 4px 0;
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-}
-
-.certificate-info a {
-  color: #bc13fe;
-  text-decoration: underline;
-  font-size: 0.95rem;
-  display: inline-block;
-  margin-bottom: 6px;
-}
-
-.certificate-card .card-actions {
-  margin-top: 8px;
-  display: flex;
-  gap: 8px;
-}
 /* ===========================
    DEVONIC ADMIN PANEL
    Purple & Dark Theme
@@ -545,6 +457,120 @@ body {
   position: absolute;
   top: 10px;
   right: 10px;
+}
+
+/* ===========================
+   CERTIFICATES PAGE
+   Same structure as Projects
+   =========================== */
+
+.certificates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  padding: 2rem 0;
+}
+
+.certificate-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--dark-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.certificate-card:hover {
+  border-color: var(--primary);
+  box-shadow: 0 0 20px var(--shadow);
+  transform: translateY(-5px);
+}
+
+.certificate-image {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background: var(--dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.certificate-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.certificate-card:hover .certificate-image img {
+  transform: scale(1.05);
+}
+
+.certificate-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.certificate-content h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.certificate-content p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.certificate-content p i {
+  color: var(--primary);
+  width: 16px;
+}
+
+.cert-date {
+  font-weight: 500;
+}
+
+.cert-issuer,
+.cert-owner {
+  font-size: 0.85rem;
+}
+
+.cert-link {
+  display: inline-block;
+  margin-top: 0.8rem;
+  padding: 0.5rem 1rem;
+  background: var(--primary);
+  color: var(--dark);
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+}
+
+.cert-link:hover {
+  background: var(--primary-dark);
+  transform: translateX(5px);
+}
+
+.certificate-actions {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
 }
 
 .loading,
