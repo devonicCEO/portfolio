@@ -84,398 +84,398 @@
         // Global session manager (auth load olduktan sonra initialize edilecek)
         const sessionManager = new SessionManager(60);
     </script>
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="sidebar-header">
-                <div class="logo">
-                    <img src="assets/logo.png" alt="Devonic Logo" />
-                    <h2>DEVONIC</h2>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="assets/logo.png" alt="Devonic Logo" />
+                <h2>DEVONIC</h2>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#projects" class="nav-item" data-page="projects">
+                <i class="fas fa-project-diagram"></i>
+                <span>Projeler</span>
+            </a>
+            <a href="#skills" class="nav-item" data-page="skills">
+                <i class="fas fa-code"></i>
+                <span>Skills</span>
+            </a>
+            <a href="#visitors" class="nav-item" data-page="visitors">
+                <i class="fas fa-eye"></i>
+                <span>Ziyaretçiler</span>
+            </a>
+            <a href="#messages" class="nav-item" data-page="messages">
+                <i class="fas fa-envelope"></i>
+                <span>Mesajlar</span>
+            </a>
+            <a href="#certificates" class="nav-item" data-page="certificates">
+                <i class="fas fa-certificate"></i>
+                <span>Sertifikalar</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button onclick="logout()" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Çıkış Yap</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="user-info">
+                    <span id="userEmail"></span>
+                    <img id="userPhoto" src="assets/logo.png" alt="User" class="user-avatar" />
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Page -->
+        <section id="dashboard-page" class="page active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="projectCount">0</h3>
+                        <p>Projeler</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="skillCount">0</h3>
+                        <p>Skills</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-certificate"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="certificateCount">0</h3>
+                        <p>Sertifikalar</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="todayVisitors">0</h3>
+                        <p>Bugün Ziyaretçi</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalMessages">0</h3>
+                        <p>Toplam Mesaj</p>
+                    </div>
                 </div>
             </div>
 
-            <nav class="sidebar-nav">
-                <a href="#dashboard" class="nav-item active" data-page="dashboard">
-                    <i class="fas fa-home"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="#projects" class="nav-item" data-page="projects">
-                    <i class="fas fa-project-diagram"></i>
-                    <span>Projeler</span>
-                </a>
-                <a href="#skills" class="nav-item" data-page="skills">
-                    <i class="fas fa-code"></i>
-                    <span>Skills</span>
-                </a>
-                <a href="#visitors" class="nav-item" data-page="visitors">
-                    <i class="fas fa-eye"></i>
-                    <span>Ziyaretçiler</span>
-                </a>
-                <a href="#messages" class="nav-item" data-page="messages">
-                    <i class="fas fa-envelope"></i>
-                    <span>Mesajlar</span>
-                </a>
-                <a href="#certificates" class="nav-item" data-page="certificates">
-                    <i class="fas fa-certificate"></i>
-                    <span>Sertifikalar</span>
-                </a>
-            </nav>
+            <div class="dashboard-content">
+                <div class="welcome-card">
+                    <h2>Hoş Geldiniz! 👋</h2>
+                    <p>
+                        Devonic Admin Paneline hoş geldiniz. Buradan projelerinizi ve
+                        yeteneklerinizi yönetebilirsiniz.
+                    </p>
+                </div>
+            </div>
+        </section>
 
-            <div class="sidebar-footer">
-                <button onclick="logout()" class="logout-btn">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span>Çıkış Yap</span>
+        <!-- Projects Page -->
+        <section id="projects-page" class="page">
+            <div class="page-header">
+                <h2>Projeler</h2>
+                <button onclick="showAddProjectModal()" class="btn-primary">
+                    <i class="fas fa-plus"></i> Yeni Proje
                 </button>
             </div>
-        </aside>
 
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Header -->
-            <header class="header">
-                <div class="header-left">
-                    <button class="menu-toggle" onclick="toggleSidebar()">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <h1 id="pageTitle">Dashboard</h1>
-                </div>
-                <div class="header-right">
-                    <div class="user-info">
-                        <span id="userEmail"></span>
-                        <img id="userPhoto" src="assets/logo.png" alt="User" class="user-avatar" />
+            <div id="projectsList" class="projects-grid">
+                <!-- Projects will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Skills Page -->
+        <section id="skills-page" class="page">
+            <div class="page-header">
+                <h2>Skills</h2>
+                <button onclick="showAddSkillModal()" class="btn-primary">
+                    <i class="fas fa-plus"></i> Yeni Skill
+                </button>
+            </div>
+
+            <div id="skillsList" class="skills-grid">
+                <!-- Skills will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Certificates Page -->
+        <section id="certificates-page" class="page">
+            <div class="page-header">
+                <h2>Sertifikalar</h2>
+                <button onclick="showAddCertificateModal()" class="btn-primary">
+                    <i class="fas fa-plus"></i> Yeni Sertifika
+                </button>
+            </div>
+
+            <div id="certificatesList" class="certificates-grid">
+                <!-- Certificates will be loaded here -->
+            </div>
+        </section>
+
+        <!-- Visitors Page -->
+        <section id="visitors-page" class="page">
+            <div class="page-header">
+                <h2>Ziyaretçi İstatistikleri</h2>
+            </div>
+
+            <div class="stats-container">
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <i class="fas fa-calendar-day"></i>
+                        <h3>Günlük Ziyaretçiler</h3>
                     </div>
-                </div>
-            </header>
-
-            <!-- Dashboard Page -->
-            <section id="dashboard-page" class="page active">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-project-diagram"></i>
+                    <div class="stats-card-body">
+                        <div class="stat-item">
+                            <span>Bugün:</span>
+                            <strong id="visitorToday">0</strong>
                         </div>
-                        <div class="stat-info">
-                            <h3 id="projectCount">0</h3>
-                            <p>Projeler</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-code"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="skillCount">0</h3>
-                            <p>Skills</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-certificate"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="certificateCount">0</h3>
-                            <p>Sertifikalar</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-eye"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="todayVisitors">0</h3>
-                            <p>Bugün Ziyaretçi</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div class="stat-info">
-                            <h3 id="totalMessages">0</h3>
-                            <p>Toplam Mesaj</p>
+                        <div class="stat-item">
+                            <span>Dün:</span>
+                            <strong id="visitorYesterday">0</strong>
                         </div>
                     </div>
                 </div>
 
-                <div class="dashboard-content">
-                    <div class="welcome-card">
-                        <h2>Hoş Geldiniz! 👋</h2>
-                        <p>
-                            Devonic Admin Paneline hoş geldiniz. Buradan projelerinizi ve
-                            yeteneklerinizi yönetebilirsiniz.
-                        </p>
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <i class="fas fa-calendar-week"></i>
+                        <h3>Haftalık Ziyaretçiler</h3>
                     </div>
-                </div>
-            </section>
-
-            <!-- Projects Page -->
-            <section id="projects-page" class="page">
-                <div class="page-header">
-                    <h2>Projeler</h2>
-                    <button onclick="showAddProjectModal()" class="btn-primary">
-                        <i class="fas fa-plus"></i> Yeni Proje
-                    </button>
-                </div>
-
-                <div id="projectsList" class="projects-grid">
-                    <!-- Projects will be loaded here -->
-                </div>
-            </section>
-
-            <!-- Skills Page -->
-            <section id="skills-page" class="page">
-                <div class="page-header">
-                    <h2>Skills</h2>
-                    <button onclick="showAddSkillModal()" class="btn-primary">
-                        <i class="fas fa-plus"></i> Yeni Skill
-                    </button>
-                </div>
-
-                <div id="skillsList" class="skills-grid">
-                    <!-- Skills will be loaded here -->
-                </div>
-            </section>
-
-            <!-- Certificates Page -->
-            <section id="certificates-page" class="page">
-                <div class="page-header">
-                    <h2>Sertifikalar</h2>
-                    <button onclick="showAddCertificateModal()" class="btn-primary">
-                        <i class="fas fa-plus"></i> Yeni Sertifika
-                    </button>
-                </div>
-
-                <div id="certificatesList" class="certificates-grid">
-                    <!-- Certificates will be loaded here -->
-                </div>
-            </section>
-
-            <!-- Visitors Page -->
-            <section id="visitors-page" class="page">
-                <div class="page-header">
-                    <h2>Ziyaretçi İstatistikleri</h2>
-                </div>
-
-                <div class="stats-container">
-                    <div class="stats-card">
-                        <div class="stats-card-header">
-                            <i class="fas fa-calendar-day"></i>
-                            <h3>Günlük Ziyaretçiler</h3>
+                    <div class="stats-card-body">
+                        <div class="stat-item">
+                            <span>Bu Hafta:</span>
+                            <strong id="visitorThisWeek">0</strong>
                         </div>
-                        <div class="stats-card-body">
-                            <div class="stat-item">
-                                <span>Bugün:</span>
-                                <strong id="visitorToday">0</strong>
-                            </div>
-                            <div class="stat-item">
-                                <span>Dün:</span>
-                                <strong id="visitorYesterday">0</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="stats-card">
-                        <div class="stats-card-header">
-                            <i class="fas fa-calendar-week"></i>
-                            <h3>Haftalık Ziyaretçiler</h3>
-                        </div>
-                        <div class="stats-card-body">
-                            <div class="stat-item">
-                                <span>Bu Hafta:</span>
-                                <strong id="visitorThisWeek">0</strong>
-                            </div>
-                            <div class="stat-item">
-                                <span>Geçen Hafta:</span>
-                                <strong id="visitorLastWeek">0</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="stats-card">
-                        <div class="stats-card-header">
-                            <i class="fas fa-calendar-alt"></i>
-                            <h3>Aylık Ziyaretçiler</h3>
-                        </div>
-                        <div class="stats-card-body">
-                            <div class="stat-item">
-                                <span>Bu Ay:</span>
-                                <strong id="visitorThisMonth">0</strong>
-                            </div>
-                            <div class="stat-item">
-                                <span>Geçen Ay:</span>
-                                <strong id="visitorLastMonth">0</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="stats-card">
-                        <div class="stats-card-header">
-                            <i class="fas fa-chart-bar"></i>
-                            <h3>Yıllık Ziyaretçiler</h3>
-                        </div>
-                        <div class="stats-card-body">
-                            <div class="stat-item">
-                                <span>Bu Yıl:</span>
-                                <strong id="visitorThisYear">0</strong>
-                            </div>
-                            <div class="stat-item">
-                                <span>Geçen Yıl:</span>
-                                <strong id="visitorLastYear">0</strong>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="stats-card full-width">
-                        <div class="stats-card-header">
-                            <i class="fas fa-users"></i>
-                            <h3>Toplam Ziyaretçiler</h3>
-                        </div>
-                        <div class="stats-card-body">
-                            <div class="stat-item">
-                                <span>Tüm Zamanlar:</span>
-                                <strong id="visitorTotal" style="font-size: 2rem; color: #bc13fe">0</strong>
-                            </div>
+                        <div class="stat-item">
+                            <span>Geçen Hafta:</span>
+                            <strong id="visitorLastWeek">0</strong>
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <!-- Messages Page -->
-            <section id="messages-page" class="page">
-                <div class="page-header">
-                    <h2>İletişim Mesajları</h2>
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <i class="fas fa-calendar-alt"></i>
+                        <h3>Aylık Ziyaretçiler</h3>
+                    </div>
+                    <div class="stats-card-body">
+                        <div class="stat-item">
+                            <span>Bu Ay:</span>
+                            <strong id="visitorThisMonth">0</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Geçen Ay:</span>
+                            <strong id="visitorLastMonth">0</strong>
+                        </div>
+                    </div>
                 </div>
 
-                <div id="messagesList" class="messages-list">
-                    <!-- Messages will be loaded here -->
+                <div class="stats-card">
+                    <div class="stats-card-header">
+                        <i class="fas fa-chart-bar"></i>
+                        <h3>Yıllık Ziyaretçiler</h3>
+                    </div>
+                    <div class="stats-card-body">
+                        <div class="stat-item">
+                            <span>Bu Yıl:</span>
+                            <strong id="visitorThisYear">0</strong>
+                        </div>
+                        <div class="stat-item">
+                            <span>Geçen Yıl:</span>
+                            <strong id="visitorLastYear">0</strong>
+                        </div>
+                    </div>
                 </div>
-            </section>
-        </main>
 
-
-
-        <!-- Add Project Modal -->
-        <div id="projectModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Yeni Proje Ekle</h3>
-                    <button onclick="closeModal('projectModal')" class="close-btn">
-                        <i class="fas fa-times"></i>
-                    </button>
+                <div class="stats-card full-width">
+                    <div class="stats-card-header">
+                        <i class="fas fa-users"></i>
+                        <h3>Toplam Ziyaretçiler</h3>
+                    </div>
+                    <div class="stats-card-body">
+                        <div class="stat-item">
+                            <span>Tüm Zamanlar:</span>
+                            <strong id="visitorTotal" style="font-size: 2rem; color: #bc13fe">0</strong>
+                        </div>
+                    </div>
                 </div>
-                <form id="projectForm" onsubmit="
+            </div>
+        </section>
+
+        <!-- Messages Page -->
+        <section id="messages-page" class="page">
+            <div class="page-header">
+                <h2>İletişim Mesajları</h2>
+            </div>
+
+            <div id="messagesList" class="messages-list">
+                <!-- Messages will be loaded here -->
+            </div>
+        </section>
+    </main>
+
+
+
+    <!-- Add Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Yeni Proje Ekle</h3>
+                <button onclick="closeModal('projectModal')" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="projectForm" onsubmit="
             event.preventDefault();
             saveProject();
           ">
-                    <div class="form-group">
-                        <label>Proje Adı *</label>
-                        <input type="text" id="projectName" required placeholder="Örn: E-Ticaret Sitesi" />
-                    </div>
+                <div class="form-group">
+                    <label>Proje Adı *</label>
+                    <input type="text" id="projectName" required placeholder="Örn: E-Ticaret Sitesi" />
+                </div>
 
-                    <div class="form-group">
-                        <label>Açıklama *</label>
-                        <textarea id="projectDescription" required placeholder="Proje hakkında detaylı açıklama..."
-                            rows="4"></textarea>
-                    </div>
+                <div class="form-group">
+                    <label>Açıklama *</label>
+                    <textarea id="projectDescription" required placeholder="Proje hakkında detaylı açıklama..."
+                        rows="4"></textarea>
+                </div>
 
-                    <div class="form-group">
-                        <label>Kapak Resmi * (İlk resim kapak olacak)</label>
-                        <input type="hidden" id="projectPhotosUrls" required />
-                        <button type="button" onclick="uploadProjectPhotos()" class="btn-secondary"
-                            style="width: 100%; margin-bottom: 10px">
-                            <i class="fas fa-cloud-upload-alt"></i> Resimleri Yükle (Çoklu)
-                        </button>
-                        <div id="projectPreviews" style="
+                <div class="form-group">
+                    <label>Kapak Resmi * (İlk resim kapak olacak)</label>
+                    <input type="hidden" id="projectPhotosUrls" required />
+                    <button type="button" onclick="uploadProjectPhotos()" class="btn-secondary"
+                        style="width: 100%; margin-bottom: 10px">
+                        <i class="fas fa-cloud-upload-alt"></i> Resimleri Yükle (Çoklu)
+                    </button>
+                    <div id="projectPreviews" style="
                 display: grid;
                 grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
                 gap: 10px;
                 margin-top: 10px;
               "></div>
-                    </div>
+                </div>
 
-                    <h4 style="
+                <h4 style="
               margin: 20px 0 10px;
               color: #bc13fe;
               border-bottom: 1px solid rgba(188, 19, 254, 0.3);
               padding-bottom: 10px;
             ">
-                        <i class="fas fa-link"></i> İndirme Linkleri (Opsiyonel)
-                    </h4>
+                    <i class="fas fa-link"></i> İndirme Linkleri (Opsiyonel)
+                </h4>
 
-                    <div class="links-grid">
-                        <div class="form-group">
-                            <label><i class="fab fa-github"></i> GitHub Link</label>
-                            <input type="url" id="projectGithubLink" placeholder="https://github.com/..." />
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fas fa-globe"></i> Live Demo Link</label>
-                            <input type="url" id="projectLiveLink" placeholder="https://..." />
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fab fa-google-play"></i> Play Store Link</label>
-                            <input type="url" id="projectPlayStoreLink" placeholder="https://play.google.com/..." />
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fab fa-apple"></i> App Store Link</label>
-                            <input type="url" id="projectAppStoreLink" placeholder="https://apps.apple.com/..." />
-                        </div>
-
-                        <div class="form-group">
-                            <label><i class="fab fa-windows"></i> Windows İndirme Link</label>
-                            <input type="url" id="projectWindowsLink" placeholder="https://..." />
-                        </div>
+                <div class="links-grid">
+                    <div class="form-group">
+                        <label><i class="fab fa-github"></i> GitHub Link</label>
+                        <input type="url" id="projectGithubLink" placeholder="https://github.com/..." />
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" onclick="closeModal('projectModal')" class="btn-secondary">
-                            İptal
-                        </button>
-                        <button type="submit" class="btn-primary">
-                            <span id="saveProjectText">Kaydet</span>
-                            <span id="saveProjectSpinner" class="spinner" style="display: none"></span>
-                        </button>
+                    <div class="form-group">
+                        <label><i class="fas fa-globe"></i> Live Demo Link</label>
+                        <input type="url" id="projectLiveLink" placeholder="https://..." />
                     </div>
-                </form>
-            </div>
-        </div>
 
-        <!-- Add Skill Modal -->
-        <div id="skillModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Yeni Skill Ekle</h3>
-                    <button onclick="closeModal('skillModal')" class="close-btn">
-                        <i class="fas fa-times"></i>
+                    <div class="form-group">
+                        <label><i class="fab fa-google-play"></i> Play Store Link</label>
+                        <input type="url" id="projectPlayStoreLink" placeholder="https://play.google.com/..." />
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fab fa-apple"></i> App Store Link</label>
+                        <input type="url" id="projectAppStoreLink" placeholder="https://apps.apple.com/..." />
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fab fa-windows"></i> Windows İndirme Link</label>
+                        <input type="url" id="projectWindowsLink" placeholder="https://..." />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('projectModal')" class="btn-secondary">
+                        İptal
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <span id="saveProjectText">Kaydet</span>
+                        <span id="saveProjectSpinner" class="spinner" style="display: none"></span>
                     </button>
                 </div>
-                <form id="skillForm" onsubmit="
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Skill Modal -->
+    <div id="skillModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Yeni Skill Ekle</h3>
+                <button onclick="closeModal('skillModal')" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="skillForm" onsubmit="
             event.preventDefault();
             saveSkill();
           ">
-                    <div class="form-group">
-                        <label>Başlık</label>
-                        <input type="text" id="skillTitle" required placeholder="Örn: Python" />
-                    </div>
+                <div class="form-group">
+                    <label>Başlık</label>
+                    <input type="text" id="skillTitle" required placeholder="Örn: Python" />
+                </div>
 
-                    <div class="form-group">
-                        <label>Yüzde (%) *</label>
-                        <input type="number" id="skillPercentage" required placeholder="Örn: 80" min="0" max="100" />
-                    </div>
+                <div class="form-group">
+                    <label>Yüzde (%) *</label>
+                    <input type="number" id="skillPercentage" required placeholder="Örn: 80" min="0" max="100" />
+                </div>
 
-                    <div class="form-group">
-                        <label>Skill İkonu/Resmi</label>
-                        <input type="hidden" id="skillPhotoUrl" required />
-                        <button type="button" onclick="uploadPhoto('skill')" class="btn-secondary"
-                            style="width: 100%; margin-bottom: 10px">
-                            <i class="fas fa-cloud-upload-alt"></i> Resim Yükle
-                        </button>
-                        <img id="skillPreview" style="
+                <div class="form-group">
+                    <label>Skill İkonu/Resmi</label>
+                    <input type="hidden" id="skillPhotoUrl" required />
+                    <button type="button" onclick="uploadPhoto('skill')" class="btn-secondary"
+                        style="width: 100%; margin-bottom: 10px">
+                        <i class="fas fa-cloud-upload-alt"></i> Resim Yükle
+                    </button>
+                    <img id="skillPreview" style="
                 display: none;
                 width: 100%;
                 max-height: 200px;
@@ -483,67 +483,67 @@
                 border-radius: 8px;
                 margin-top: 10px;
               " />
-                    </div>
+                </div>
 
-                    <div class="modal-footer">
-                        <button type="button" onclick="closeModal('skillModal')" class="btn-secondary">
-                            İptal
-                        </button>
-                        <button type="submit" class="btn-primary">
-                            <span id="saveSkillText">Kaydet</span>
-                            <span id="saveSkillSpinner" class="spinner" style="display: none"></span>
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Add Certificate Modal -->
-        <div id="certificateModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3>Yeni Sertifika Ekle</h3>
-                    <button onclick="closeModal('certificateModal')" class="close-btn">
-                        <i class="fas fa-times"></i>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('skillModal')" class="btn-secondary">
+                        İptal
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <span id="saveSkillText">Kaydet</span>
+                        <span id="saveSkillSpinner" class="spinner" style="display: none"></span>
                     </button>
                 </div>
-                <form id="certificateForm" onsubmit="
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Certificate Modal -->
+    <div id="certificateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Yeni Sertifika Ekle</h3>
+                <button onclick="closeModal('certificateModal')" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="certificateForm" onsubmit="
             event.preventDefault();
             saveCertificate();
           ">
-                    <div class="form-group">
-                        <label>Sertifika Adı *</label>
-                        <input type="text" id="certificateTitle" required placeholder="Örn: Python Advanced" />
-                    </div>
+                <div class="form-group">
+                    <label>Sertifika Adı *</label>
+                    <input type="text" id="certificateTitle" required placeholder="Örn: Python Advanced" />
+                </div>
 
-                    <div class="form-group">
-                        <label>Tarih *</label>
-                        <input type="date" id="certificateDate" required />
-                    </div>
+                <div class="form-group">
+                    <label>Tarih *</label>
+                    <input type="date" id="certificateDate" required />
+                </div>
 
-                    <div class="form-group">
-                        <label>Kurum/Yayınlayan *</label>
-                        <input type="text" id="certificateIssuer" required placeholder="Örn: Udemy" />
-                    </div>
+                <div class="form-group">
+                    <label>Kurum/Yayınlayan *</label>
+                    <input type="text" id="certificateIssuer" required placeholder="Örn: Udemy" />
+                </div>
 
-                    <div class="form-group">
-                        <label>Kimden *</label>
-                        <input type="text" id="certificateOwner" required placeholder="Örn: Tech Academy" />
-                    </div>
+                <div class="form-group">
+                    <label>Kimden *</label>
+                    <input type="text" id="certificateOwner" required placeholder="Örn: Tech Academy" />
+                </div>
 
-                    <div class="form-group">
-                        <label>Sertifika Linki (Opsiyonel)</label>
-                        <input type="url" id="certificateUrl" placeholder="https://..." />
-                    </div>
+                <div class="form-group">
+                    <label>Sertifika Linki (Opsiyonel)</label>
+                    <input type="url" id="certificateUrl" placeholder="https://..." />
+                </div>
 
-                    <div class="form-group">
-                        <label>Sertifika Resmi *</label>
-                        <input type="hidden" id="certificatePhotoUrl" required />
-                        <button type="button" onclick="uploadPhoto('certificate')" class="btn-secondary"
-                            style="width: 100%; margin-bottom: 10px">
-                            <i class="fas fa-cloud-upload-alt"></i> Resim Yükle
-                        </button>
-                        <img id="certificatePreview" style="
+                <div class="form-group">
+                    <label>Sertifika Resmi *</label>
+                    <input type="hidden" id="certificatePhotoUrl" required />
+                    <button type="button" onclick="uploadPhoto('certificate')" class="btn-secondary"
+                        style="width: 100%; margin-bottom: 10px">
+                        <i class="fas fa-cloud-upload-alt"></i> Resim Yükle
+                    </button>
+                    <img id="certificatePreview" style="
                 display: none;
                 width: 100%;
                 max-height: 200px;
@@ -551,303 +551,303 @@
                 border-radius: 8px;
                 margin-top: 10px;
               " />
-                    </div>
+                </div>
 
-                    <div class="modal-footer">
-                        <button type="button" onclick="closeModal('certificateModal')" class="btn-secondary">
-                            İptal
-                        </button>
-                        <button type="submit" class="btn-primary">
-                            <span id="saveCertificateText">Kaydet</span>
-                            <span id="saveCertificateSpinner" class="spinner" style="display: none"></span>
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="closeModal('certificateModal')" class="btn-secondary">
+                        İptal
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        <span id="saveCertificateText">Kaydet</span>
+                        <span id="saveCertificateSpinner" class="spinner" style="display: none"></span>
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
 
-        <script>
-            // Cloudinary Upload Widget
-            function uploadPhoto(type) {
-                const widget = cloudinary.createUploadWidget(
-                    {
-                        cloudName: CLOUD_NAME,
-                        uploadPreset: UPLOAD_PRESET,
-                        multiple: false,
-                        maxFiles: 1,
-                        sources: ["local", "url", "camera"],
-                        clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
-                        maxFileSize: 10000000,
-                    },
-                    (error, result) => {
-                        if (!error && result && result.event === "success") {
-                            const url = result.info.secure_url;
-                            document.getElementById(type + "PhotoUrl").value = url;
-                            document.getElementById(type + "Preview").src = url;
-                            document.getElementById(type + "Preview").style.display = "block";
-                        }
-                    },
-                );
-                widget.open();
+    <script>
+        // Cloudinary Upload Widget
+        function uploadPhoto(type) {
+            const widget = cloudinary.createUploadWidget(
+                {
+                    cloudName: CLOUD_NAME,
+                    uploadPreset: UPLOAD_PRESET,
+                    multiple: false,
+                    maxFiles: 1,
+                    sources: ["local", "url", "camera"],
+                    clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
+                    maxFileSize: 10000000,
+                },
+                (error, result) => {
+                    if (!error && result && result.event === "success") {
+                        const url = result.info.secure_url;
+                        document.getElementById(type + "PhotoUrl").value = url;
+                        document.getElementById(type + "Preview").src = url;
+                        document.getElementById(type + "Preview").style.display = "block";
+                    }
+                },
+            );
+            widget.open();
+        }
+
+        // Proje için çoklu foto upload
+        function uploadProjectPhotos() {
+            const widget = cloudinary.createUploadWidget(
+                {
+                    cloudName: CLOUD_NAME,
+                    uploadPreset: UPLOAD_PRESET,
+                    multiple: true,
+                    maxFiles: 10,
+                    sources: ["local", "url"],
+                    clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
+                    maxFileSize: 10000000,
+                },
+                (error, result) => {
+                    if (!error && result && result.event === "success") {
+                        const url = result.info.secure_url;
+                        const currentUrls =
+                            document.getElementById("projectPhotosUrls").value;
+                        const urlsArray = currentUrls ? currentUrls.split(",") : [];
+                        urlsArray.push(url);
+                        document.getElementById("projectPhotosUrls").value =
+                            urlsArray.join(",");
+
+                        const preview = document.createElement("div");
+                        preview.style.cssText =
+                            "position: relative; border-radius: 8px; overflow: hidden; margin: 5px;";
+                        preview.innerHTML = `<img src="${url}" style="width: 100%; height: 100px; object-fit: cover;" />`;
+                        document.getElementById("projectPreviews").appendChild(preview);
+                    }
+                },
+            );
+            widget.open();
+        }
+
+        // Auth Check
+        const allowedEmails = [
+            "umitjan.novruzov06@gmail.com",
+            "admin@devonic.com",
+        ];
+
+        auth.onAuthStateChanged((user) => {
+            if (!user || !allowedEmails.includes(user.email.toLowerCase())) {
+                window.location.href = "auth.html";
+                return;
             }
 
-            // Proje için çoklu foto upload
-            function uploadProjectPhotos() {
-                const widget = cloudinary.createUploadWidget(
-                    {
-                        cloudName: CLOUD_NAME,
-                        uploadPreset: UPLOAD_PRESET,
-                        multiple: true,
-                        maxFiles: 10,
-                        sources: ["local", "url"],
-                        clientAllowedFormats: ["png", "jpg", "jpeg", "webp"],
-                        maxFileSize: 10000000,
-                    },
-                    (error, result) => {
-                        if (!error && result && result.event === "success") {
-                            const url = result.info.secure_url;
-                            const currentUrls =
-                                document.getElementById("projectPhotosUrls").value;
-                            const urlsArray = currentUrls ? currentUrls.split(",") : [];
-                            urlsArray.push(url);
-                            document.getElementById("projectPhotosUrls").value =
-                                urlsArray.join(",");
-
-                            const preview = document.createElement("div");
-                            preview.style.cssText =
-                                "position: relative; border-radius: 8px; overflow: hidden; margin: 5px;";
-                            preview.innerHTML = `<img src="${url}" style="width: 100%; height: 100px; object-fit: cover;" />`;
-                            document.getElementById("projectPreviews").appendChild(preview);
-                        }
-                    },
-                );
-                widget.open();
+            document.getElementById("userEmail").textContent = user.email;
+            if (user.photoURL) {
+                document.getElementById("userPhoto").src = user.photoURL;
             }
 
-            // Auth Check
-            const allowedEmails = [
-                "umitjan.novruzov06@gmail.com",
-                "admin@devonic.com",
-            ];
+            // GÜVENLİK: Session Manager başlat
+            sessionManager.init();
 
-            auth.onAuthStateChanged((user) => {
-                if (!user || !allowedEmails.includes(user.email.toLowerCase())) {
+            loadDashboardData();
+        });
+
+        // Logout
+        function logout() {
+            if (confirm("Çıkış yapmak istediğinize emin misiniz?")) {
+                auth.signOut().then(() => {
                     window.location.href = "auth.html";
-                    return;
-                }
-
-                document.getElementById("userEmail").textContent = user.email;
-                if (user.photoURL) {
-                    document.getElementById("userPhoto").src = user.photoURL;
-                }
-
-                // GÜVENLİK: Session Manager başlat
-                sessionManager.init();
-
-                loadDashboardData();
-            });
-
-            // Logout
-            function logout() {
-                if (confirm("Çıkış yapmak istediğinize emin misiniz?")) {
-                    auth.signOut().then(() => {
-                        window.location.href = "auth.html";
-                    });
-                }
-            }
-
-            // Toggle Sidebar
-            function toggleSidebar() {
-                const sidebar = document.querySelector(".sidebar");
-                sidebar.classList.toggle("show");
-            }
-
-            // Page Navigation
-            document.querySelectorAll(".nav-item").forEach((item) => {
-                item.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    const page = item.dataset.page;
-
-                    // Update active nav
-                    document
-                        .querySelectorAll(".nav-item")
-                        .forEach((nav) => nav.classList.remove("active"));
-                    item.classList.add("active");
-
-                    // Update active page
-                    document
-                        .querySelectorAll(".page")
-                        .forEach((p) => p.classList.remove("active"));
-                    document.getElementById(page + "-page").classList.add("active");
-
-                    // Update title
-                    const titles = {
-                        dashboard: "Dashboard",
-                        projects: "Projeler",
-                        skills: "Skills",
-                        visitors: "Ziyaretçi İstatistikleri",
-                        messages: "İletişim Mesajları",
-                        certificates: "Sertifikalar",
-                    };
-                    document.getElementById("pageTitle").textContent = titles[page];
-
-                    // Load data
-                    if (page === "projects") loadProjects();
-                    if (page === "skills") loadSkills();
-                    if (page === "visitors") loadVisitorStats();
-                    if (page === "messages") loadMessages();
-                    if (page === "certificates") loadCertificates();
                 });
+            }
+        }
+
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const sidebar = document.querySelector(".sidebar");
+            sidebar.classList.toggle("show");
+        }
+
+        // Page Navigation
+        document.querySelectorAll(".nav-item").forEach((item) => {
+            item.addEventListener("click", (e) => {
+                e.preventDefault();
+                const page = item.dataset.page;
+
+                // Update active nav
+                document
+                    .querySelectorAll(".nav-item")
+                    .forEach((nav) => nav.classList.remove("active"));
+                item.classList.add("active");
+
+                // Update active page
+                document
+                    .querySelectorAll(".page")
+                    .forEach((p) => p.classList.remove("active"));
+                document.getElementById(page + "-page").classList.add("active");
+
+                // Update title
+                const titles = {
+                    dashboard: "Dashboard",
+                    projects: "Projeler",
+                    skills: "Skills",
+                    visitors: "Ziyaretçi İstatistikleri",
+                    messages: "İletişim Mesajları",
+                    certificates: "Sertifikalar",
+                };
+                document.getElementById("pageTitle").textContent = titles[page];
+
+                // Load data
+                if (page === "projects") loadProjects();
+                if (page === "skills") loadSkills();
+                if (page === "visitors") loadVisitorStats();
+                if (page === "messages") loadMessages();
+                if (page === "certificates") loadCertificates();
             });
+        });
 
-            // Load Dashboard Data
-            function loadDashboardData() {
-                // Load project count
-                db.collection("projects")
-                    .get()
-                    .then((snapshot) => {
-                        document.getElementById("projectCount").textContent = snapshot.size;
-                    });
+        // Load Dashboard Data
+        function loadDashboardData() {
+            // Load project count
+            db.collection("projects")
+                .get()
+                .then((snapshot) => {
+                    document.getElementById("projectCount").textContent = snapshot.size;
+                });
 
-                // Load skill count
-                db.collection("skills")
-                    .get()
-                    .then((snapshot) => {
-                        document.getElementById("skillCount").textContent = snapshot.size;
-                    });
-                // Load certificate count
-                db.collection("certificates")
-                    .get()
-                    .then((snapshot) => {
-                        document.getElementById("certificateCount").textContent = snapshot.size;
-                    });
+            // Load skill count
+            db.collection("skills")
+                .get()
+                .then((snapshot) => {
+                    document.getElementById("skillCount").textContent = snapshot.size;
+                });
+            // Load certificate count
+            db.collection("certificates")
+                .get()
+                .then((snapshot) => {
+                    document.getElementById("certificateCount").textContent = snapshot.size;
+                });
 
-                // Load today's visitors
-                const today = new Date().toISOString().split("T")[0];
-                db.collection("site-visitors")
-                    .doc("summary")
-                    .get()
-                    .then((doc) => {
-                        if (doc.exists) {
-                            const todayCount = doc.data().daily?.[today] || 0;
-                            document.getElementById("todayVisitors").textContent = todayCount;
-                        }
-                    });
+            // Load today's visitors
+            const today = new Date().toISOString().split("T")[0];
+            db.collection("site-visitors")
+                .doc("summary")
+                .get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        const todayCount = doc.data().daily?.[today] || 0;
+                        document.getElementById("todayVisitors").textContent = todayCount;
+                    }
+                });
 
-                // Load messages count
-                db.collection("contacts")
-                    .get()
-                    .then((snapshot) => {
-                        document.getElementById("totalMessages").textContent =
-                            snapshot.size;
-                    });
-            }
+            // Load messages count
+            db.collection("contacts")
+                .get()
+                .then((snapshot) => {
+                    document.getElementById("totalMessages").textContent =
+                        snapshot.size;
+                });
+        }
 
-            // Load Visitor Statistics
-            function loadVisitorStats() {
-                db.collection("site-visitors")
-                    .doc("summary")
-                    .onSnapshot((doc) => {
-                        if (!doc.exists) {
-                            // Veri yoksa 0 göster
-                            document.getElementById("visitorToday").textContent = 0;
-                            document.getElementById("visitorYesterday").textContent = 0;
-                            document.getElementById("visitorThisWeek").textContent = 0;
-                            document.getElementById("visitorLastWeek").textContent = 0;
-                            document.getElementById("visitorThisMonth").textContent = 0;
-                            document.getElementById("visitorLastMonth").textContent = 0;
-                            document.getElementById("visitorThisYear").textContent = 0;
-                            document.getElementById("visitorLastYear").textContent = 0;
-                            document.getElementById("visitorTotal").textContent = 0;
-                            return;
-                        }
+        // Load Visitor Statistics
+        function loadVisitorStats() {
+            db.collection("site-visitors")
+                .doc("summary")
+                .onSnapshot((doc) => {
+                    if (!doc.exists) {
+                        // Veri yoksa 0 göster
+                        document.getElementById("visitorToday").textContent = 0;
+                        document.getElementById("visitorYesterday").textContent = 0;
+                        document.getElementById("visitorThisWeek").textContent = 0;
+                        document.getElementById("visitorLastWeek").textContent = 0;
+                        document.getElementById("visitorThisMonth").textContent = 0;
+                        document.getElementById("visitorLastMonth").textContent = 0;
+                        document.getElementById("visitorThisYear").textContent = 0;
+                        document.getElementById("visitorLastYear").textContent = 0;
+                        document.getElementById("visitorTotal").textContent = 0;
+                        return;
+                    }
 
-                        const data = doc.data();
-                        const now = new Date();
-                        const today = now.toISOString().split("T")[0];
-                        const yesterday = new Date(now.getTime() - 86400000)
-                            .toISOString()
-                            .split("T")[0];
+                    const data = doc.data();
+                    const now = new Date();
+                    const today = now.toISOString().split("T")[0];
+                    const yesterday = new Date(now.getTime() - 86400000)
+                        .toISOString()
+                        .split("T")[0];
 
-                        // Hafta hesapla
-                        function getWeekNumber(date) {
-                            const d = new Date(
-                                Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
-                            );
-                            const dayNum = d.getUTCDay() || 7;
-                            d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-                            const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-                            return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-                        }
-
-                        const year = now.getFullYear().toString();
-                        const month = (now.getMonth() + 1).toString().padStart(2, "0");
-                        const week = getWeekNumber(now).toString();
-                        const lastWeek = getWeekNumber(
-                            new Date(now.getTime() - 604800000),
-                        ).toString();
-                        const lastMonth =
-                            now.getMonth() === 0
-                                ? "12"
-                                : now.getMonth().toString().padStart(2, "0");
-                        const lastYear = (now.getFullYear() - 1).toString();
-
-                        // Günlük
-                        document.getElementById("visitorToday").textContent =
-                            data.daily?.[today] || 0;
-                        document.getElementById("visitorYesterday").textContent =
-                            data.daily?.[yesterday] || 0;
-
-                        // Haftalık
-                        document.getElementById("visitorThisWeek").textContent =
-                            data.weekly?.[`${year}-W${week}`] || 0;
-                        document.getElementById("visitorLastWeek").textContent =
-                            data.weekly?.[`${year}-W${lastWeek}`] || 0;
-
-                        // Aylık
-                        document.getElementById("visitorThisMonth").textContent =
-                            data.monthly?.[`${year}-${month}`] || 0;
-                        document.getElementById("visitorLastMonth").textContent =
-                            data.monthly?.[`${year}-${lastMonth}`] || 0;
-
-                        // Yıllık
-                        document.getElementById("visitorThisYear").textContent =
-                            data.yearly?.[year] || 0;
-                        document.getElementById("visitorLastYear").textContent =
-                            data.yearly?.[lastYear] || 0;
-
-                        // Toplam
-                        const total = Object.values(data.yearly || {}).reduce(
-                            (a, b) => a + b,
-                            0,
+                    // Hafta hesapla
+                    function getWeekNumber(date) {
+                        const d = new Date(
+                            Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()),
                         );
-                        document.getElementById("visitorTotal").textContent = total;
-                    });
-            }
+                        const dayNum = d.getUTCDay() || 7;
+                        d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+                        const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+                        return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+                    }
 
-            // Load Messages
-            function loadMessages() {
-                db.collection("contacts")
-                    .orderBy("timestamp", "desc")
-                    .onSnapshot((snapshot) => {
-                        const messagesList = document.getElementById("messagesList");
-                        messagesList.innerHTML = "";
+                    const year = now.getFullYear().toString();
+                    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+                    const week = getWeekNumber(now).toString();
+                    const lastWeek = getWeekNumber(
+                        new Date(now.getTime() - 604800000),
+                    ).toString();
+                    const lastMonth =
+                        now.getMonth() === 0
+                            ? "12"
+                            : now.getMonth().toString().padStart(2, "0");
+                    const lastYear = (now.getFullYear() - 1).toString();
 
-                        if (snapshot.empty) {
-                            messagesList.innerHTML =
-                                '<div class="empty-state">Henüz mesaj yok.</div>';
-                            return;
-                        }
+                    // Günlük
+                    document.getElementById("visitorToday").textContent =
+                        data.daily?.[today] || 0;
+                    document.getElementById("visitorYesterday").textContent =
+                        data.daily?.[yesterday] || 0;
 
-                        snapshot.forEach((doc) => {
-                            const data = doc.data();
-                            const timestamp = data.timestamp
-                                ? new Date(data.timestamp.toDate()).toLocaleString("tr-TR")
-                                : "Tarih Bilinmiyor";
+                    // Haftalık
+                    document.getElementById("visitorThisWeek").textContent =
+                        data.weekly?.[`${year}-W${week}`] || 0;
+                    document.getElementById("visitorLastWeek").textContent =
+                        data.weekly?.[`${year}-W${lastWeek}`] || 0;
 
-                            const messageCard = document.createElement("div");
-                            messageCard.className = `message-card ${data.read ? "" : "unread"}`;
-                            messageCard.innerHTML = `
+                    // Aylık
+                    document.getElementById("visitorThisMonth").textContent =
+                        data.monthly?.[`${year}-${month}`] || 0;
+                    document.getElementById("visitorLastMonth").textContent =
+                        data.monthly?.[`${year}-${lastMonth}`] || 0;
+
+                    // Yıllık
+                    document.getElementById("visitorThisYear").textContent =
+                        data.yearly?.[year] || 0;
+                    document.getElementById("visitorLastYear").textContent =
+                        data.yearly?.[lastYear] || 0;
+
+                    // Toplam
+                    const total = Object.values(data.yearly || {}).reduce(
+                        (a, b) => a + b,
+                        0,
+                    );
+                    document.getElementById("visitorTotal").textContent = total;
+                });
+        }
+
+        // Load Messages
+        function loadMessages() {
+            db.collection("contacts")
+                .orderBy("timestamp", "desc")
+                .onSnapshot((snapshot) => {
+                    const messagesList = document.getElementById("messagesList");
+                    messagesList.innerHTML = "";
+
+                    if (snapshot.empty) {
+                        messagesList.innerHTML =
+                            '<div class="empty-state">Henüz mesaj yok.</div>';
+                        return;
+                    }
+
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const timestamp = data.timestamp
+                            ? new Date(data.timestamp.toDate()).toLocaleString("tr-TR")
+                            : "Tarih Bilinmiyor";
+
+                        const messageCard = document.createElement("div");
+                        messageCard.className = `message-card ${data.read ? "" : "unread"}`;
+                        messageCard.innerHTML = `
                             <div class="message-header">
                                 <div>
                                     <h3>${data.name}</h3>
@@ -867,120 +867,120 @@
                                 </button>
                             </div>
                         `;
-                            messagesList.appendChild(messageCard);
-                        });
+                        messagesList.appendChild(messageCard);
                     });
-            }
+                });
+        }
 
-            // Mark message as read
-            function markMessageAsRead(id) {
-                db.collection("contacts")
-                    .doc(id)
-                    .update({ read: true })
-                    .then(() => {
-                        console.log("Mesaj okundu olarak işaretlendi");
-                    })
-                    .catch((err) => console.error("Hata:", err));
-            }
+        // Mark message as read
+        function markMessageAsRead(id) {
+            db.collection("contacts")
+                .doc(id)
+                .update({ read: true })
+                .then(() => {
+                    console.log("Mesaj okundu olarak işaretlendi");
+                })
+                .catch((err) => console.error("Hata:", err));
+        }
 
-            // Delete message
-            function deleteMessage(id) {
-                if (!confirm("Bu mesajı silmek istediğinize emin misiniz?")) return;
-                db.collection("contacts")
-                    .doc(id)
-                    .delete()
-                    .then(() => {
-                        console.log("Mesaj silindi");
-                    })
-                    .catch((err) => console.error("Hata:", err));
-            }
+        // Delete message
+        function deleteMessage(id) {
+            if (!confirm("Bu mesajı silmek istediğinize emin misiniz?")) return;
+            db.collection("contacts")
+                .doc(id)
+                .delete()
+                .then(() => {
+                    console.log("Mesaj silindi");
+                })
+                .catch((err) => console.error("Hata:", err));
+        }
 
-            // Projects Functions
-            let editProjectId = null;
+        // Projects Functions
+        let editProjectId = null;
 
-            function showAddProjectModal() {
-                editProjectId = null;
-                document.querySelector("#projectModal .modal-header h3").textContent =
-                    "Yeni Proje Ekle";
+        function showAddProjectModal() {
+            editProjectId = null;
+            document.querySelector("#projectModal .modal-header h3").textContent =
+                "Yeni Proje Ekle";
+            document.getElementById("projectModal").classList.add("show");
+            document.getElementById("projectForm").reset();
+            document.getElementById("projectPhotosUrls").value = "";
+            document.getElementById("projectPreviews").innerHTML = "";
+        }
+
+        async function editProject(id) {
+            editProjectId = id;
+            document.querySelector("#projectModal .modal-header h3").textContent =
+                "Projeyi Düzenle";
+
+            try {
+                const doc = await db.collection("projects").doc(id).get();
+                if (!doc.exists) {
+                    alert("Proje bulunamadı!");
+                    return;
+                }
+
+                const data = doc.data();
+
+                // Form alanlarını doldur
+                document.getElementById("projectName").value = data.name || "";
+                document.getElementById("projectDescription").value =
+                    data.description || "";
+                document.getElementById("projectGithubLink").value =
+                    data.githubLink || "";
+                document.getElementById("projectLiveLink").value =
+                    data.liveLink || "";
+                document.getElementById("projectPlayStoreLink").value =
+                    data.playStoreLink || "";
+                document.getElementById("projectAppStoreLink").value =
+                    data.appStoreLink || "";
+                document.getElementById("projectWindowsLink").value =
+                    data.windowsLink || "";
+
+                // Resimleri göster
+                const images = data.images || [];
+                document.getElementById("projectPhotosUrls").value = images.join(",");
+                const previews = document.getElementById("projectPreviews");
+                previews.innerHTML = "";
+                images.forEach((img) => {
+                    const preview = document.createElement("div");
+                    preview.style.cssText =
+                        "position: relative; border-radius: 8px; overflow: hidden; margin: 5px;";
+                    preview.innerHTML = `<img src="${img}" style="width: 100%; height: 100px; object-fit: cover;" />`;
+                    previews.appendChild(preview);
+                });
+
+                // Modal'ı aç
                 document.getElementById("projectModal").classList.add("show");
-                document.getElementById("projectForm").reset();
-                document.getElementById("projectPhotosUrls").value = "";
-                document.getElementById("projectPreviews").innerHTML = "";
+            } catch (error) {
+                alert("Proje yüklenemedi: " + error.message);
             }
+        }
 
-            async function editProject(id) {
-                editProjectId = id;
-                document.querySelector("#projectModal .modal-header h3").textContent =
-                    "Projeyi Düzenle";
+        function loadProjects() {
+            const list = document.getElementById("projectsList");
+            list.innerHTML = '<div class="loading">Yükleniyor...</div>';
 
-                try {
-                    const doc = await db.collection("projects").doc(id).get();
-                    if (!doc.exists) {
-                        alert("Proje bulunamadı!");
+            db.collection("projects")
+                .orderBy("createdAt", "desc")
+                .get()
+                .then((snapshot) => {
+                    if (snapshot.empty) {
+                        list.innerHTML =
+                            '<div class="empty-state">Henüz proje eklenmemiş.</div>';
                         return;
                     }
 
-                    const data = doc.data();
-
-                    // Form alanlarını doldur
-                    document.getElementById("projectName").value = data.name || "";
-                    document.getElementById("projectDescription").value =
-                        data.description || "";
-                    document.getElementById("projectGithubLink").value =
-                        data.githubLink || "";
-                    document.getElementById("projectLiveLink").value =
-                        data.liveLink || "";
-                    document.getElementById("projectPlayStoreLink").value =
-                        data.playStoreLink || "";
-                    document.getElementById("projectAppStoreLink").value =
-                        data.appStoreLink || "";
-                    document.getElementById("projectWindowsLink").value =
-                        data.windowsLink || "";
-
-                    // Resimleri göster
-                    const images = data.images || [];
-                    document.getElementById("projectPhotosUrls").value = images.join(",");
-                    const previews = document.getElementById("projectPreviews");
-                    previews.innerHTML = "";
-                    images.forEach((img) => {
-                        const preview = document.createElement("div");
-                        preview.style.cssText =
-                            "position: relative; border-radius: 8px; overflow: hidden; margin: 5px;";
-                        preview.innerHTML = `<img src="${img}" style="width: 100%; height: 100px; object-fit: cover;" />`;
-                        previews.appendChild(preview);
-                    });
-
-                    // Modal'ı aç
-                    document.getElementById("projectModal").classList.add("show");
-                } catch (error) {
-                    alert("Proje yüklenemedi: " + error.message);
-                }
-            }
-
-            function loadProjects() {
-                const list = document.getElementById("projectsList");
-                list.innerHTML = '<div class="loading">Yükleniyor...</div>';
-
-                db.collection("projects")
-                    .orderBy("createdAt", "desc")
-                    .get()
-                    .then((snapshot) => {
-                        if (snapshot.empty) {
-                            list.innerHTML =
-                                '<div class="empty-state">Henüz proje eklenmemiş.</div>';
-                            return;
-                        }
-
-                        list.innerHTML = "";
-                        snapshot.forEach((doc) => {
-                            const data = doc.data();
-                            const imageUrl =
-                                data.coverImage ||
-                                data.imageUrl ||
-                                (data.images && data.images[0]) ||
-                                "";
-                            const views = data.views || 0;
-                            list.innerHTML += `
+                    list.innerHTML = "";
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const imageUrl =
+                            data.coverImage ||
+                            data.imageUrl ||
+                            (data.images && data.images[0]) ||
+                            "";
+                        const views = data.views || 0;
+                        list.innerHTML += `
                             <div class="project-card">
                                 <img src="${imageUrl}" alt="${data.name}" />
                                 <div class="project-info">
@@ -1002,137 +1002,137 @@
                                 </div>
                             </div>
                         `;
-                        });
-                    })
-                    .catch((err) => {
-                        list.innerHTML =
-                            '<div class="error">Yükleme hatası: ' + err.message + "</div>";
                     });
+                })
+                .catch((err) => {
+                    list.innerHTML =
+                        '<div class="error">Yükleme hatası: ' + err.message + "</div>";
+                });
+        }
+
+        async function saveProject() {
+            const name = document.getElementById("projectName").value.trim();
+            const description = document
+                .getElementById("projectDescription")
+                .value.trim();
+            const photosUrls = document.getElementById("projectPhotosUrls").value;
+            const githubLink = document
+                .getElementById("projectGithubLink")
+                .value.trim();
+            const liveLink = document
+                .getElementById("projectLiveLink")
+                .value.trim();
+            const playStoreLink = document
+                .getElementById("projectPlayStoreLink")
+                .value.trim();
+            const appStoreLink = document
+                .getElementById("projectAppStoreLink")
+                .value.trim();
+            const windowsLink = document
+                .getElementById("projectWindowsLink")
+                .value.trim();
+
+            if (!name || !description || !photosUrls) {
+                alert("Lütfen zorunlu alanları doldurun!");
+                return;
             }
 
-            async function saveProject() {
-                const name = document.getElementById("projectName").value.trim();
-                const description = document
-                    .getElementById("projectDescription")
-                    .value.trim();
-                const photosUrls = document.getElementById("projectPhotosUrls").value;
-                const githubLink = document
-                    .getElementById("projectGithubLink")
-                    .value.trim();
-                const liveLink = document
-                    .getElementById("projectLiveLink")
-                    .value.trim();
-                const playStoreLink = document
-                    .getElementById("projectPlayStoreLink")
-                    .value.trim();
-                const appStoreLink = document
-                    .getElementById("projectAppStoreLink")
-                    .value.trim();
-                const windowsLink = document
-                    .getElementById("projectWindowsLink")
-                    .value.trim();
+            // Show loading
+            document.getElementById("saveProjectText").style.display = "none";
+            document.getElementById("saveProjectSpinner").style.display =
+                "inline-block";
 
-                if (!name || !description || !photosUrls) {
-                    alert("Lütfen zorunlu alanları doldurun!");
-                    return;
+            try {
+                const photosArray = photosUrls.split(",");
+                const projectData = {
+                    name,
+                    description,
+                    coverImage: photosArray[0],
+                    images: photosArray,
+                };
+
+                // Sadece dolu olan linkleri ekle
+                if (githubLink) projectData.githubLink = githubLink;
+                if (liveLink) projectData.liveLink = liveLink;
+                if (playStoreLink) projectData.playStoreLink = playStoreLink;
+                if (appStoreLink) projectData.appStoreLink = appStoreLink;
+                if (windowsLink) projectData.windowsLink = windowsLink;
+
+                // Yeni proje mi, düzenleme mi?
+                if (editProjectId) {
+                    // Düzenleme - views ve createdAt'ı koruyalım
+                    await db
+                        .collection("projects")
+                        .doc(editProjectId)
+                        .update(projectData);
+                    alert("Proje başarıyla güncellendi!");
+                } else {
+                    // Yeni ekleme
+                    projectData.views = 0;
+                    projectData.createdAt =
+                        firebase.firestore.FieldValue.serverTimestamp();
+                    await db.collection("projects").add(projectData);
+                    alert("Proje başarıyla eklendi!");
                 }
+                closeModal("projectModal");
+                loadProjects();
+                loadDashboardData();
+            } catch (error) {
+                alert("Hata: " + error.message);
+            } finally {
+                document.getElementById("saveProjectText").style.display = "inline";
+                document.getElementById("saveProjectSpinner").style.display = "none";
+            }
+        }
 
-                // Show loading
-                document.getElementById("saveProjectText").style.display = "none";
-                document.getElementById("saveProjectSpinner").style.display =
-                    "inline-block";
+        function deleteProject(id) {
+            if (!confirm("Bu projeyi silmek istediğinize emin misiniz?")) return;
 
-                try {
-                    const photosArray = photosUrls.split(",");
-                    const projectData = {
-                        name,
-                        description,
-                        coverImage: photosArray[0],
-                        images: photosArray,
-                    };
+            db.collection("projects")
+                .doc(id)
+                .get()
+                .then(async (doc) => {
+                    const data = doc.data();
+                    // Delete image from Cloudinary (optional - requires backend)
+                    // Cloudinary'den silmek için backend API gerekir veya direkt bırakabilirsiniz
 
-                    // Sadece dolu olan linkleri ekle
-                    if (githubLink) projectData.githubLink = githubLink;
-                    if (liveLink) projectData.liveLink = liveLink;
-                    if (playStoreLink) projectData.playStoreLink = playStoreLink;
-                    if (appStoreLink) projectData.appStoreLink = appStoreLink;
-                    if (windowsLink) projectData.windowsLink = windowsLink;
-
-                    // Yeni proje mi, düzenleme mi?
-                    if (editProjectId) {
-                        // Düzenleme - views ve createdAt'ı koruyalım
-                        await db
-                            .collection("projects")
-                            .doc(editProjectId)
-                            .update(projectData);
-                        alert("Proje başarıyla güncellendi!");
-                    } else {
-                        // Yeni ekleme
-                        projectData.views = 0;
-                        projectData.createdAt =
-                            firebase.firestore.FieldValue.serverTimestamp();
-                        await db.collection("projects").add(projectData);
-                        alert("Proje başarıyla eklendi!");
-                    }
-                    closeModal("projectModal");
+                    // Delete document
+                    return db.collection("projects").doc(id).delete();
+                })
+                .then(() => {
+                    alert("Proje silindi!");
                     loadProjects();
                     loadDashboardData();
-                } catch (error) {
-                    alert("Hata: " + error.message);
-                } finally {
-                    document.getElementById("saveProjectText").style.display = "inline";
-                    document.getElementById("saveProjectSpinner").style.display = "none";
-                }
-            }
+                })
+                .catch((err) => alert("Hata: " + err.message));
+        }
 
-            function deleteProject(id) {
-                if (!confirm("Bu projeyi silmek istediğinize emin misiniz?")) return;
+        // Skills Functions
+        function showAddSkillModal() {
+            document.getElementById("skillModal").classList.add("show");
+            document.getElementById("skillForm").reset();
+            document.getElementById("skillPhotoUrl").value = "";
+            document.getElementById("skillPreview").style.display = "none";
+        }
 
-                db.collection("projects")
-                    .doc(id)
-                    .get()
-                    .then(async (doc) => {
+        function loadSkills() {
+            const list = document.getElementById("skillsList");
+            list.innerHTML = '<div class="loading">Yükleniyor...</div>';
+
+            db.collection("skills")
+                .orderBy("createdAt", "desc")
+                .get()
+                .then((snapshot) => {
+                    if (snapshot.empty) {
+                        list.innerHTML =
+                            '<div class="empty-state">Henüz skill eklenmemiş.</div>';
+                        return;
+                    }
+
+                    list.innerHTML = "";
+                    snapshot.forEach((doc) => {
                         const data = doc.data();
-                        // Delete image from Cloudinary (optional - requires backend)
-                        // Cloudinary'den silmek için backend API gerekir veya direkt bırakabilirsiniz
-
-                        // Delete document
-                        return db.collection("projects").doc(id).delete();
-                    })
-                    .then(() => {
-                        alert("Proje silindi!");
-                        loadProjects();
-                        loadDashboardData();
-                    })
-                    .catch((err) => alert("Hata: " + err.message));
-            }
-
-            // Skills Functions
-            function showAddSkillModal() {
-                document.getElementById("skillModal").classList.add("show");
-                document.getElementById("skillForm").reset();
-                document.getElementById("skillPhotoUrl").value = "";
-                document.getElementById("skillPreview").style.display = "none";
-            }
-
-            function loadSkills() {
-                const list = document.getElementById("skillsList");
-                list.innerHTML = '<div class="loading">Yükleniyor...</div>';
-
-                db.collection("skills")
-                    .orderBy("createdAt", "desc")
-                    .get()
-                    .then((snapshot) => {
-                        if (snapshot.empty) {
-                            list.innerHTML =
-                                '<div class="empty-state">Henüz skill eklenmemiş.</div>';
-                            return;
-                        }
-
-                        list.innerHTML = "";
-                        snapshot.forEach((doc) => {
-                            const data = doc.data();
-                            list.innerHTML += `
+                        list.innerHTML += `
                             <div class="skill-card">
                                 <img src="${data.imageUrl}" alt="${data.title}" />
                                 <h3>${data.title}</h3>
@@ -1141,203 +1141,203 @@
                                 </button>
                             </div>
                         `;
-                        });
-                    })
-                    .catch((err) => {
-                        list.innerHTML =
-                            '<div class="error">Yükleme hatası: ' + err.message + "</div>";
                     });
+                })
+                .catch((err) => {
+                    list.innerHTML =
+                        '<div class="error">Yükleme hatası: ' + err.message + "</div>";
+                });
+        }
+
+        async function saveSkill() {
+            const title = document.getElementById("skillTitle").value.trim();
+            const percentage = parseInt(document.getElementById("skillPercentage").value);
+            const imageUrl = document.getElementById("skillPhotoUrl").value;
+
+            if (!title || !imageUrl || !percentage) {
+                alert("Lütfen tüm alanları doldurun!");
+                return;
             }
 
-            async function saveSkill() {
-                const title = document.getElementById("skillTitle").value.trim();
-                const percentage = parseInt(document.getElementById("skillPercentage").value);
-                const imageUrl = document.getElementById("skillPhotoUrl").value;
+            if (percentage < 0 || percentage > 100) {
+                alert("Yüzde değeri 0-100 arasında olmalıdır!");
+                return;
+            }
 
-                if (!title || !imageUrl || !percentage) {
-                    alert("Lütfen tüm alanları doldurun!");
-                    return;
-                }
+            // Show loading
+            document.getElementById("saveSkillText").style.display = "none";
+            document.getElementById("saveSkillSpinner").style.display =
+                "inline-block";
 
-                if (percentage < 0 || percentage > 100) {
-                    alert("Yüzde değeri 0-100 arasında olmalıdır!");
-                    return;
-                }
+            try {
+                // Save to Firestore
+                await db.collection("skills").add({
+                    title,
+                    imageUrl,
+                    percentage,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                });
 
-                // Show loading
-                document.getElementById("saveSkillText").style.display = "none";
-                document.getElementById("saveSkillSpinner").style.display =
-                    "inline-block";
+                alert("Skill başarıyla eklendi!");
+                closeModal("skillModal");
+                loadSkills();
+                loadDashboardData();
+            } catch (error) {
+                alert("Hata: " + error.message);
+            } finally {
+                document.getElementById("saveSkillText").style.display = "inline";
+                document.getElementById("saveSkillSpinner").style.display = "none";
+            }
+        }
 
-                try {
-                    // Save to Firestore
-                    await db.collection("skills").add({
-                        title,
-                        imageUrl,
-                        percentage,
-                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    });
+        function deleteSkill(id) {
+            if (!confirm("Bu skill'i silmek istediğinize emin misiniz?")) return;
 
-                    alert("Skill başarıyla eklendi!");
-                    closeModal("skillModal");
+            db.collection("skills")
+                .doc(id)
+                .get()
+                .then(async (doc) => {
+                    const data = doc.data();
+                    // Delete image from Cloudinary (optional - requires backend)
+                    // Cloudinary'den silmek için backend API gerekir veya direkt bırakabilirsiniz
+
+                    // Delete document
+                    return db.collection("skills").doc(id).delete();
+                })
+                .then(() => {
+                    alert("Skill silindi!");
                     loadSkills();
                     loadDashboardData();
-                } catch (error) {
-                    alert("Hata: " + error.message);
-                } finally {
-                    document.getElementById("saveSkillText").style.display = "inline";
-                    document.getElementById("saveSkillSpinner").style.display = "none";
+                })
+                .catch((err) => alert("Hata: " + err.message));
+        }
+
+        // Certificate Functions
+        let editCertificateId = null;
+
+        async function saveCertificate() {
+            const title = document.getElementById("certificateTitle").value.trim();
+            const date = document.getElementById("certificateDate").value;
+            const issuer = document.getElementById("certificateIssuer").value.trim();
+            const owner = document.getElementById("certificateOwner").value.trim();
+            const url = document.getElementById("certificateUrl").value;
+            const imageUrl = document.getElementById("certificatePhotoUrl").value;
+
+            if (!title || !date || !issuer || !owner || !imageUrl) {
+                alert("Lütfen zorunlu alanları doldurun!");
+                return;
+            }
+
+            document.getElementById("saveCertificateText").style.display = "none";
+            document.getElementById("saveCertificateSpinner").style.display = "inline-block";
+
+            try {
+                if (editCertificateId) {
+                    // Update
+                    await db.collection("certificates").doc(editCertificateId).update({
+                        title,
+                        date,
+                        issuer,
+                        owner,
+                        url: url || "",
+                        imageUrl,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    });
+                    alert("Sertifika güncellendi!");
+                } else {
+                    // Create
+                    await db.collection("certificates").add({
+                        title,
+                        date,
+                        issuer,
+                        owner,
+                        url: url || "",
+                        imageUrl,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    });
+                    alert("Sertifika eklendi!");
                 }
+                closeModal("certificateModal");
+                loadCertificates();
+                loadDashboardData();
+            } catch (error) {
+                alert("Hata: " + error.message);
+            } finally {
+                document.getElementById("saveCertificateText").style.display = "inline";
+                document.getElementById("saveCertificateSpinner").style.display = "none";
             }
+        }
 
-            function deleteSkill(id) {
-                if (!confirm("Bu skill'i silmek istediğinize emin misiniz?")) return;
+        async function editCertificate(id) {
+            editCertificateId = id;
+            document.querySelector("#certificateModal .modal-header h3").textContent = "Sertifikayı Düzenle";
 
-                db.collection("skills")
-                    .doc(id)
-                    .get()
-                    .then(async (doc) => {
-                        const data = doc.data();
-                        // Delete image from Cloudinary (optional - requires backend)
-                        // Cloudinary'den silmek için backend API gerekir veya direkt bırakabilirsiniz
-
-                        // Delete document
-                        return db.collection("skills").doc(id).delete();
-                    })
-                    .then(() => {
-                        alert("Skill silindi!");
-                        loadSkills();
-                        loadDashboardData();
-                    })
-                    .catch((err) => alert("Hata: " + err.message));
-            }
-
-            // Certificate Functions
-            let editCertificateId = null;
-
-            async function saveCertificate() {
-                const title = document.getElementById("certificateTitle").value.trim();
-                const date = document.getElementById("certificateDate").value;
-                const issuer = document.getElementById("certificateIssuer").value.trim();
-                const owner = document.getElementById("certificateOwner").value.trim();
-                const url = document.getElementById("certificateUrl").value;
-                const imageUrl = document.getElementById("certificatePhotoUrl").value;
-
-                if (!title || !date || !issuer || !owner || !imageUrl) {
-                    alert("Lütfen zorunlu alanları doldurun!");
+            try {
+                const doc = await db.collection("certificates").doc(id).get();
+                if (!doc.exists) {
+                    alert("Sertifika bulunamadı!");
                     return;
                 }
 
-                document.getElementById("saveCertificateText").style.display = "none";
-                document.getElementById("saveCertificateSpinner").style.display = "inline-block";
+                const data = doc.data();
+                document.getElementById("certificateTitle").value = data.title || "";
+                document.getElementById("certificateDate").value = data.date || "";
+                document.getElementById("certificateIssuer").value = data.issuer || "";
+                document.getElementById("certificateOwner").value = data.owner || "";
+                document.getElementById("certificateUrl").value = data.url || "";
+                document.getElementById("certificatePhotoUrl").value = data.imageUrl || "";
+                document.getElementById("certificatePreview").src = data.imageUrl || "";
+                document.getElementById("certificatePreview").style.display = data.imageUrl ? "block" : "none";
 
-                try {
-                    if (editCertificateId) {
-                        // Update
-                        await db.collection("certificates").doc(editCertificateId).update({
-                            title,
-                            date,
-                            issuer,
-                            owner,
-                            url: url || "",
-                            imageUrl,
-                            updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        });
-                        alert("Sertifika güncellendi!");
-                    } else {
-                        // Create
-                        await db.collection("certificates").add({
-                            title,
-                            date,
-                            issuer,
-                            owner,
-                            url: url || "",
-                            imageUrl,
-                            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                        });
-                        alert("Sertifika eklendi!");
-                    }
-                    closeModal("certificateModal");
+                document.getElementById("certificateModal").classList.add("show");
+            } catch (error) {
+                alert("Hata: " + error.message);
+            }
+        }
+
+        function deleteCertificate(id) {
+            if (!confirm("Bu sertifikayı silmek istediğinize emin misiniz?")) return;
+
+            db.collection("certificates")
+                .doc(id)
+                .delete()
+                .then(() => {
+                    alert("Sertifika silindi!");
                     loadCertificates();
                     loadDashboardData();
-                } catch (error) {
-                    alert("Hata: " + error.message);
-                } finally {
-                    document.getElementById("saveCertificateText").style.display = "inline";
-                    document.getElementById("saveCertificateSpinner").style.display = "none";
-                }
-            }
+                })
+                .catch((err) => alert("Hata: " + err.message));
+        }
 
-            async function editCertificate(id) {
-                editCertificateId = id;
-                document.querySelector("#certificateModal .modal-header h3").textContent = "Sertifikayı Düzenle";
+        // Modal Functions
+        function showAddCertificateModal() {
+            editCertificateId = null;
+            document.querySelector("#certificateModal .modal-header h3").textContent = "Yeni Sertifika Ekle";
+            document.getElementById("certificateModal").classList.add("show");
+            document.getElementById("certificateForm").reset();
+            document.getElementById("certificatePhotoUrl").value = "";
+            document.getElementById("certificatePreview").style.display = "none";
+        }
 
-                try {
-                    const doc = await db.collection("certificates").doc(id).get();
-                    if (!doc.exists) {
-                        alert("Sertifika bulunamadı!");
-                        return;
-                    }
+        function loadCertificates() {
+            const list = document.getElementById("certificatesList");
+            list.innerHTML = '<div class="loading">Yükleniyor...</div>';
 
-                    const data = doc.data();
-                    document.getElementById("certificateTitle").value = data.title || "";
-                    document.getElementById("certificateDate").value = data.date || "";
-                    document.getElementById("certificateIssuer").value = data.issuer || "";
-                    document.getElementById("certificateOwner").value = data.owner || "";
-                    document.getElementById("certificateUrl").value = data.url || "";
-                    document.getElementById("certificatePhotoUrl").value = data.imageUrl || "";
-                    document.getElementById("certificatePreview").src = data.imageUrl || "";
-                    document.getElementById("certificatePreview").style.display = data.imageUrl ? "block" : "none";
-
-                    document.getElementById("certificateModal").classList.add("show");
-                } catch (error) {
-                    alert("Hata: " + error.message);
-                }
-            }
-
-            function deleteCertificate(id) {
-                if (!confirm("Bu sertifikayı silmek istediğinize emin misiniz?")) return;
-
-                db.collection("certificates")
-                    .doc(id)
-                    .delete()
-                    .then(() => {
-                        alert("Sertifika silindi!");
-                        loadCertificates();
-                        loadDashboardData();
-                    })
-                    .catch((err) => alert("Hata: " + err.message));
-            }
-
-            // Modal Functions
-            function showAddCertificateModal() {
-                editCertificateId = null;
-                document.querySelector("#certificateModal .modal-header h3").textContent = "Yeni Sertifika Ekle";
-                document.getElementById("certificateModal").classList.add("show");
-                document.getElementById("certificateForm").reset();
-                document.getElementById("certificatePhotoUrl").value = "";
-                document.getElementById("certificatePreview").style.display = "none";
-            }
-
-            function loadCertificates() {
-                const list = document.getElementById("certificatesList");
-                list.innerHTML = '<div class="loading">Yükleniyor...</div>';
-
-                // Realtime listener - onSnapshot kullanarak
-                db.collection("certificates")
-                    .orderBy("date", "desc")
-                    .onSnapshot(
-                        (snapshot) => {
-                            if (snapshot.empty) {
-                                list.innerHTML = '<div class="empty-state">Henüz sertifika eklenmemiş.</div>';
-                                return;
-                            }
-                            list.innerHTML = "";
-                            snapshot.forEach((doc) => {
-                                const data = doc.data();
-                                const certCard = document.createElement("div");
-                                certCard.className = "certificate-card";
-                                certCard.innerHTML = `
+            // Realtime listener - onSnapshot kullanarak
+            db.collection("certificates")
+                .orderBy("date", "desc")
+                .onSnapshot(
+                    (snapshot) => {
+                        if (snapshot.empty) {
+                            list.innerHTML = '<div class="empty-state">Henüz sertifika eklenmemiş.</div>';
+                            return;
+                        }
+                        list.innerHTML = "";
+                        snapshot.forEach((doc) => {
+                            const data = doc.data();
+                            const certCard = document.createElement("div");
+                            certCard.className = "certificate-card";
+                            certCard.innerHTML = `
                                     <div class="certificate-image">
                                         <img src="${data.imageUrl}" alt="${data.title}" />
                                     </div>
@@ -1353,27 +1353,25 @@
                                         </div>
                                     </div>
                                 `;
-                                list.appendChild(certCard);
-                            });
-                        },
-                        (error) => {
-                            list.innerHTML = '<div class="error">Yükleme hatası: ' + error.message + "</div>";
-                        }
-                    );
-            }
-            function closeModal(modalId) {
-                document.getElementById(modalId).classList.remove("show");
-            }
+                            list.appendChild(certCard);
+                        });
+                    },
+                    (error) => {
+                        list.innerHTML = '<div class="error">Yükleme hatası: ' + error.message + "</div>";
+                    }
+                );
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove("show");
+        }
 
-            // Close modal on outside click
-            window.onclick = function (event) {
-                if (event.target.classList.contains("modal")) {
-                    event.target.classList.remove("show");
-                }
-            };
-        </script>
-    </body>
+        // Close modal on outside click
+        window.onclick = function (event) {
+            if (event.target.classList.contains("modal")) {
+                event.target.classList.remove("show");
+            }
+        };
+    </script>
+</body>
 
 </html>
-
- 
