@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Disallow admin pages
+Disallow: /admin.html
+Disallow: /auth.html
+
+# Disallow backend and config files
+Disallow: /backend/
+Disallow: /js/firebase-config.js
+Disallow: /.env
+Disallow: /firebase.json
+
+# Sitemap
+Sitemap: https://ilk-proje-b974f.web.app/sitemap.xml

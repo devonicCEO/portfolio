@@ -243,9 +243,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Reset form
         form.reset();
-
-        // Log submission
-        console.log(`📧 Message submitted: ${docRef.id}`);
       })
       .catch((error) => {
         console.error("❌ Firestore Error:", error);
@@ -265,20 +262,4 @@ document.addEventListener("DOMContentLoaded", () => {
         showStatus(errorMsg, "error");
       });
   });
-
-  // ========================================
-  // INITIALIZATION
-  // ========================================
-
-  // Log today's submission count on page load
-  const todayCount = getTodaySubmissionCount();
-  if (todayCount > 0) {
-    const remaining = MAX_MESSAGES_PER_DAY - todayCount;
-    console.log(
-      `📧 Today's submissions: ${todayCount}/${MAX_MESSAGES_PER_DAY} | Remaining: ${remaining}`,
-    );
-  }
-
-  // Log form initialization
-  console.log("✅ XSS-Secure contact form initialized");
 });

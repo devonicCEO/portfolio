@@ -1,13 +1,3 @@
-/**
- * ========================================
- * PORTFOLIO STATS - FIREBASE DATA LOADER
- * ========================================
- * Loads statistics from Firestore:
- * - Projects count
- * - Certificates count
- * - Skills count
- */
-
 document.addEventListener("DOMContentLoaded", async () => {
   // Firebase'nin yüklenmiş olduğunu kontrol et
   if (typeof firebase === "undefined" || !window.db) {
@@ -31,10 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const skillsSnap = await window.db.collection("skills").get();
     const skillsCount = skillsSnap.size;
     document.getElementById("skills-count").textContent = skillsCount;
-
-    console.log("✅ Stats loaded successfully!");
   } catch (error) {
-    console.error("❌ Error loading stats from Firebase:", error);
     // Fallback values if Firebase fails
     document.getElementById("projects-count").textContent = "?";
     document.getElementById("certificates-count").textContent = "?";

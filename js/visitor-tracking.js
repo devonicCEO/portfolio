@@ -19,13 +19,11 @@
     try {
       // Bugün zaten sayıldıysa, tekrar sayma
       if (hasTrackedToday()) {
-        console.log("ℹ Bu kişi bugün zaten sayıldı");
         return;
       }
 
       // Firebase config'i kontrol et
       if (typeof firebase === "undefined" || !firebase.firestore) {
-        console.log("Firebase henüz yüklenmedi");
         return;
       }
 
@@ -72,10 +70,8 @@
 
       // Bugün sayıldığını işaretle
       markTrackedToday();
-
-      console.log("✓ Ziyaret kaydedildi:", dateStr);
     } catch (error) {
-      console.log("Ziyaret kaydı başarısız (beklenen):", error.message);
+      // Silent fail
     }
   }
 

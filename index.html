@@ -5,10 +5,40 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Umitjan Novruzov - Full Stack Developer specializing in Flutter, Python, C#, and web development. Founder of Devonic. 5+ years of experience in creating innovative digital solutions." />
+    <meta name="keywords"
+        content="Umitjan, Devonic, Full Stack Developer, Flutter Developer, Python Developer, C# Developer, Web Developer, Portfolio, Software Engineer, Mobile App Development" />
+    <meta name="author" content="Umitjan Novruzov" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://ilk-proje-b974f.web.app/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ilk-proje-b974f.web.app/" />
+    <meta property="og:title" content="Umitjan | Full Stack Developer - Devonic" />
+    <meta property="og:description"
+        content="Full Stack Developer with 5+ years of experience in Flutter, Python, C#, and web development. Building innovative digital solutions." />
+    <meta property="og:image" content="https://ilk-proje-b974f.web.app/assets/logo.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://ilk-proje-b974f.web.app/" />
+    <meta property="twitter:title" content="Umitjan | Full Stack Developer - Devonic" />
+    <meta property="twitter:description"
+        content="Full Stack Developer with 5+ years of experience in Flutter, Python, C#, and web development." />
+    <meta property="twitter:image" content="https://ilk-proje-b974f.web.app/assets/logo.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/logo.png" />
+    <link rel="apple-touch-icon" href="assets/logo.png" />
+
     <!-- Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
+
 
     <link rel="stylesheet" href="css/styles.css" />
 
@@ -140,23 +170,27 @@
                             alt="GitHub" />
                         <span>GitHub</span>
                     </a>
-                    <a href="https://linkedin.com/in/your-linkedin" target="_blank" class="contact-item"
+                    <!-- LinkedIn: Eklemek için kendi profil URL'nizi kullanın
+                    <a href="https://linkedin.com/in/umitjan-novruzov" target="_blank" class="contact-item"
                         data-aos="fade-up" data-aos-delay="50" rel="noopener noreferrer">
                         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg"
                             alt="LinkedIn" />
                         <span>LinkedIn</span>
                     </a>
+                    -->
                     <a href="mailto:umitjan.novruzov06@gmail.com" class="contact-item" data-aos="fade-up"
                         data-aos-delay="75">
                         <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/google/google-original.svg"
                             alt="Email" />
                         <span>Email</span>
                     </a>
-                    <a href="https://wa.me/YOUR_PHONE_NUMBER" target="_blank" class="contact-item whatsapp"
+                    <!-- WhatsApp: Eklemek için kendi numaranızı kullanın (format: 905551234567)
+                    <a href="https://wa.me/905551234567" target="_blank" class="contact-item whatsapp"
                         data-aos="fade-up" data-aos-delay="100" rel="noopener noreferrer">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" />
                         <span>WhatsApp</span>
                     </a>
+                    -->
                 </div>
                 <a href="#about" class="cta-button">Learn More →</a>
             </div>
@@ -274,8 +308,8 @@
             <p>&copy; 2025 Umitjan | Devonic. All rights reserved.</p>
             <div class="footer-links">
                 <a href="https://github.com/devonicCEO" target="_blank" rel="noopener noreferrer">GitHub</a>
-                <a href="https://linkedin.com/in/your-linkedin" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                <a href="https://wa.me/YOUR_PHONE_NUMBER" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                <a href="mailto:umitjan.novruzov06@gmail.com" rel="noopener noreferrer">Email</a>
+                <!-- LinkedIn ve WhatsApp eklemek için kendi bilgilerinizi kullanın -->
             </div>
         </footer>
 
@@ -410,7 +444,6 @@
         // Firebase'den Skills Yükle (Realtime)
         function loadSkills() {
             if (typeof db === "undefined") {
-                console.log("Firebase yüklenemedi, skills yüklenemedi.");
                 return;
             }
 
@@ -480,7 +513,6 @@
         // Firebase'den Projects Yükle (Realtime)
         function loadProjects() {
             if (typeof db === "undefined") {
-                console.log("Firebase yüklenemedi, projects yüklenemedi.");
                 return;
             }
 
@@ -548,7 +580,6 @@
         // Firebase'den Certificates Yükle (Realtime)
         function loadCertificates() {
             if (typeof db === "undefined") {
-                console.log("Firebase yüklenemedi, certificates yüklenemedi.");
                 return;
             }
 
