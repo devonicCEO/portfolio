@@ -15,13 +15,6 @@
       ".env.*.local",
       "functions/**"
     ],
-    "redirects": [
-      {
-        "source": "/",
-        "destination": "/index.html",
-        "type": 200
-      }
-    ],
     "rewrites": [
       {
         "source": "**",
