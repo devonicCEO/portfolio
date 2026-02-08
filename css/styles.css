@@ -494,6 +494,49 @@ body::before {
   padding: 120px 0;
 }
 
+/* Stats Container */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 30px;
+  margin-bottom: 80px;
+  padding: 0 20px;
+}
+
+.stat-card {
+  background: linear-gradient(
+    135deg,
+    rgba(188, 19, 254, 0.15),
+    rgba(188, 19, 254, 0.05)
+  );
+  border: 1px solid rgba(188, 19, 254, 0.3);
+  border-radius: 15px;
+  padding: 40px 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.stat-card:hover {
+  border-color: #bc13fe;
+  box-shadow: 0 10px 40px rgba(188, 19, 254, 0.3);
+  transform: translateY(-5px);
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #bc13fe;
+  margin-bottom: 10px;
+  font-family: "Montserrat", sans-serif;
+}
+
+.stat-label {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 500;
+}
+
 .filter-buttons {
   display: flex;
   justify-content: center;
