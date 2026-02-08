@@ -41,43 +41,133 @@
                 this.timeoutMs = timeoutMinutes * 60 * 1000;
                 this.inactivityTimer = null;
                 this.initialized = false;
+                this.warningTimer = null;
+                this.warningMinutes = 5; // Son 5 dakika uyarısı
             }
 
             init() {
                 if (this.initialized) return;
 
                 // Activity events'ı listen et
-                ['mousedown', 'keydown', 'scroll', 'touchstart', 'click'].forEach(
+                ['mousedown', 'keydown', 'scroll', 'touchstart', 'click', 'mousemove'].forEach(
                     (event) => {
                         document.addEventListener(event, () => this.reset(), true);
                     }
                 );
 
-                // Tab kapatılırken logout
-                window.addEventListener("beforeunload", () => {
-                    if (window.auth) {
+                // Tab kapatılırken veya gizlenirken logout
+                window.addEventListener("beforeunload", (e) => {
+                    if (window.auth && window.auth.currentUser) {
+                        // localStorage'a logout işareti koy
+                        localStorage.setItem('admin_logout_pending', Date.now().toString());
                         auth.signOut();
                     }
                 });
+
+                // Sekme gizlendiğinde (tab switch, minimize)
+                document.addEventListener("visibilitychange", () => {
+                    if (document.hidden) {
+                        // Sekme gizlendiğinde son aktivite zamanını kaydet
+                        localStorage.setItem('admin_last_activity', Date.now().toString());
+                    } else {
+                        // Sekme tekrar görünür olduğunda kontrol et
+                        this.checkLastActivity();
+                    }
+                });
+
+                // Sayfa yüklendiğinde pending logout kontrol et
+                const logoutPending = localStorage.getItem('admin_logout_pending');
+                if (logoutPending) {
+                    const timeDiff = Date.now() - parseInt(logoutPending);
+                    // 5 saniyeden kısa sürede tekrar açıldıysa logout yapma
+                    if (timeDiff > 5000) {
+                        localStorage.removeItem('admin_logout_pending');
+                        this.forceLogout('Önceki oturum kapatıldı');
+                        return;
+                    }
+                    localStorage.removeItem('admin_logout_pending');
+                }
 
                 this.initialized = true;
                 this.reset();
             }
 
+            checkLastActivity() {
+                const lastActivity = localStorage.getItem('admin_last_activity');
+                if (lastActivity) {
+                    const timeDiff = Date.now() - parseInt(lastActivity);
+                    // 1 saatten fazla geçtiyse logout
+                    if (timeDiff > this.timeoutMs) {
+                        this.forceLogout('Uzun süre inaktif kaldınız');
+                    } else {
+                        // Kalan süre için timer'ı güncelle
+                        this.reset();
+                    }
+                }
+            }
+
             reset() {
                 clearTimeout(this.inactivityTimer);
+                clearTimeout(this.warningTimer);
+
+                // Uyarı timer'ı (timeout'tan 5 dakika önce)
+                const warningTime = this.timeoutMs - (this.warningMinutes * 60 * 1000);
+                if (warningTime > 0) {
+                    this.warningTimer = setTimeout(() => {
+                        this.showWarning();
+                    }, warningTime);
+                }
+
+                // Logout timer'ı
                 this.inactivityTimer = setTimeout(() => {
                     this.logout();
                 }, this.timeoutMs);
+
+                // Son aktivite zamanını kaydet
+                localStorage.setItem('admin_last_activity', Date.now().toString());
+            }
+
+            showWarning() {
+                const remainingMinutes = this.warningMinutes;
+                const userConfirm = confirm(
+                    `Dikkat! ${remainingMinutes} dakika içinde oturumunuz otomatik olarak kapatılacak.\n\n` +
+                    'Devam etmek istiyor musunuz?'
+                );
+
+                if (userConfirm) {
+                    // Kullanıcı devam etmek istiyorsa timer'ı sıfırla
+                    this.reset();
+                }
             }
 
             logout() {
-                alert('Güvenlik nedeniyle oturum kapatıldı (60 dakika inaktivite)');
+                if (window.auth && window.auth.currentUser) {
+                    this.forceLogout('Güvenlik nedeniyle oturum kapatıldı (1 saat inaktivite)');
+                }
+            }
+
+            forceLogout(message) {
+                alert(message);
+                localStorage.removeItem('admin_last_activity');
+                localStorage.removeItem('admin_logout_pending');
+
                 if (window.auth) {
                     auth.signOut().then(() => {
                         window.location.href = 'auth.html';
+                    }).catch(() => {
+                        window.location.href = 'auth.html';
                     });
+                } else {
+                    window.location.href = 'auth.html';
                 }
+            }
+
+            // Manuel logout için
+            manualLogout() {
+                localStorage.removeItem('admin_last_activity');
+                localStorage.removeItem('admin_logout_pending');
+                clearTimeout(this.inactivityTimer);
+                clearTimeout(this.warningTimer);
             }
         }
 
@@ -650,6 +740,11 @@
         // Logout
         function logout() {
             if (confirm("Çıkış yapmak istediğinize emin misiniz?")) {
+                // Session manager'ı temizle
+                if (typeof sessionManager !== 'undefined') {
+                    sessionManager.manualLogout();
+                }
+
                 auth.signOut().then(() => {
                     window.location.href = "auth.html";
                 });
