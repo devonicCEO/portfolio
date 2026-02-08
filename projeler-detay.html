@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Proje Detay | Devonic</title>
 
-    <!-- Security Headers -->
+    
     <meta http-equiv="X-Content-Type-Options" content="nosniff" />
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
     <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
@@ -15,27 +15,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <!-- Firebase -->
+    
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
     <script src="js/firebase-config.js"></script>
 </head>
 
 <body>
-    <!-- Back Button -->
+    
     <a href="index.html" class="back-btn">
         <i class="fas fa-arrow-left"></i> Ana Sayfa
     </a>
 
-    <!-- Loading -->
+    
     <div id="loading" class="loading-screen">
         <div class="spinner"></div>
         <p>Yükleniyor...</p>
     </div>
 
-    <!-- Main Content -->
+    
     <div class="container" id="mainContent" style="display: none">
-        <!-- Project Header -->
+        
         <div class="project-header">
             <h1 id="projectName"></h1>
             <div class="project-meta">
@@ -43,26 +43,26 @@
             </div>
         </div>
 
-        <!-- Project Content -->
+        
         <div class="project-layout">
-            <!-- Left: Cover Image -->
+            
             <div class="project-media">
                 <div class="cover-image">
                     <img id="coverImage" src="" alt="Project Cover" />
                 </div>
 
-                <!-- Image Gallery -->
+                
                 <div class="image-gallery" id="imageGallery"></div>
             </div>
 
-            <!-- Right: Details & Downloads -->
+            
             <div class="project-details">
                 <div class="section">
                     <h2>Açıklama</h2>
                     <p id="projectDescription"></p>
                 </div>
 
-                <!-- Download Links -->
+                
                 <div class="section downloads" id="downloadSection">
                     <h2>İndirmeler & Linkler</h2>
                     <div class="download-buttons" id="downloadButtons"></div>

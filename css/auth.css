@@ -1,7 +1,4 @@
-/* ===========================
-   DEVONIC - MODERN AUTH
-   Purple & Dark Theme
-   =========================== */
+
 
 :root {
   --gold: #d4af37;
@@ -44,7 +41,7 @@ body {
   overflow-y: auto;
 }
 
-/* ============ ANIMATED BACKGROUND ============ */
+
 .auth-background {
   position: absolute;
   inset: 0;
@@ -86,7 +83,7 @@ body {
   }
 }
 
-/* ============ AUTH CONTAINER ============ */
+
 .auth-container {
   position: relative;
   z-index: 10;
@@ -107,7 +104,7 @@ body {
   }
 }
 
-/* ============ LOGO ============ */
+
 .auth-logo {
   text-align: center;
   margin-bottom: 40px;
@@ -169,7 +166,7 @@ body {
   text-transform: uppercase;
 }
 
-/* ============ AUTH CARD ============ */
+
 .auth-card {
   background: rgba(26, 26, 26, 0.85);
   backdrop-filter: blur(20px);
@@ -194,7 +191,7 @@ body {
   margin-bottom: 32px;
 }
 
-/* ============ FORM ELEMENTS ============ */
+
 .form-group {
   margin-bottom: 20px;
 }
@@ -250,7 +247,7 @@ body {
   color: var(--gold);
 }
 
-/* ============ BUTTONS ============ */
+
 .btn {
   width: 100%;
   padding: 14px;
@@ -330,7 +327,7 @@ body {
   font-size: 18px;
 }
 
-/* ============ ALERTS ============ */
+
 .alert {
   padding: 14px 16px;
   border-radius: 10px;
@@ -376,7 +373,7 @@ body {
   font-size: 16px;
 }
 
-/* ============ LOCKOUT TIMER ============ */
+
 .lockout-timer {
   background: rgba(255, 159, 64, 0.1);
   border: 1px solid rgba(255, 159, 64, 0.3);
@@ -407,7 +404,7 @@ body {
   margin-top: 8px;
 }
 
-/* ============ LOADING SPINNER ============ */
+
 .spinner {
   display: inline-block;
   width: 16px;
@@ -424,7 +421,7 @@ body {
   }
 }
 
-/* ============ RESPONSIVE ============ */
+
 @media (max-width: 640px) {
   .auth-card {
     padding: 32px 24px;
@@ -467,3 +464,4 @@ body {
     font-size: 14px;
   }
 }
+

@@ -1,7 +1,4 @@
-/* ===========================
-   DEVONIC ADMIN PANEL
-   Purple & Dark Theme
-   =========================== */
+
 
 :root {
   --primary: #bc13fe;
@@ -53,9 +50,7 @@ body {
   }
 }
 
-/* ===========================
-   SIDEBAR
-   =========================== */
+
 
 .sidebar {
   position: fixed;
@@ -157,9 +152,7 @@ body {
   color: #000;
 }
 
-/* ===========================
-   MAIN CONTENT
-   =========================== */
+
 
 .main-content {
   margin-left: 280px;
@@ -222,9 +215,7 @@ body {
   border: 2px solid var(--primary);
 }
 
-/* ===========================
-   PAGES
-   =========================== */
+
 
 .page {
   padding: 2rem;
@@ -247,9 +238,7 @@ body {
   font-weight: 600;
 }
 
-/* ===========================
-   DASHBOARD
-   =========================== */
+
 
 .stats-grid {
   display: grid;
@@ -321,9 +310,7 @@ body {
   line-height: 1.6;
 }
 
-/* ===========================
-   PROJECTS & SKILLS GRID
-   =========================== */
+
 
 .projects-grid,
 .skills-grid {
@@ -387,7 +374,7 @@ body {
   -webkit-box-orient: vertical;
 }
 
-/* Project Stats */
+
 .project-stats {
   display: flex;
   align-items: center;
@@ -408,7 +395,7 @@ body {
   color: var(--primary);
 }
 
-/* Card Actions - Buttons container */
+
 .card-actions {
   display: flex;
   gap: 0.5rem;
@@ -459,10 +446,7 @@ body {
   right: 10px;
 }
 
-/* ===========================
-   CERTIFICATES PAGE
-   Same structure as Projects
-   =========================== */
+
 
 .certificates-grid {
   display: grid;
@@ -586,9 +570,7 @@ body {
   color: #ff4444;
 }
 
-/* ===========================
-   BUTTONS
-   =========================== */
+
 
 .btn-primary,
 .btn-secondary {
@@ -625,9 +607,7 @@ body {
   color: var(--text);
 }
 
-/* ===========================
-   MODAL
-   =========================== */
+
 
 .modal {
   display: none;
@@ -718,7 +698,7 @@ body {
   border-color: var(--primary);
 }
 
-/* Links Grid - 2 column layout for link inputs */
+
 .links-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -790,9 +770,7 @@ body {
   }
 }
 
-/* ===========================
-   RESPONSIVE
-   =========================== */
+
 
 @media (max-width: 1024px) {
   .sidebar {
@@ -812,9 +790,7 @@ body {
   }
 }
 
-/* ===========================
-   VISITOR & MESSAGE STATS
-   =========================== */
+
 
 .stats-container {
   display: grid;
@@ -884,7 +860,7 @@ body {
   font-weight: 700;
 }
 
-/* Messages List */
+
 .messages-list {
   display: flex;
   flex-direction: column;
@@ -977,9 +953,7 @@ body {
   color: #fff;
 }
 
-/* ===========================
-   RESPONSIVE
-   =========================== */
+
 
 @media (max-width: 768px) {
   .header {
@@ -1015,3 +989,4 @@ body {
     grid-column: auto;
   }
 }
+

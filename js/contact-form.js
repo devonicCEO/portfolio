@@ -7,9 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("formMessage");
   const MAX_MESSAGES_PER_DAY = 10;
 
-  /**
-   * localStorage'dan bugünün mesajlarını al
-   */
+  
   function getTodaySubmissionCount() {
     const submissions = JSON.parse(
       localStorage.getItem("contactSubmissions") || "[]",
@@ -18,9 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return submissions.filter((s) => s.date === today).length;
   }
 
-  /**
-   * localStorage'a yeni mesajı kaydet
-   */
+  
   function recordSubmissionLocally() {
     const submissions = JSON.parse(
       localStorage.getItem("contactSubmissions") || "[]",
@@ -32,7 +28,6 @@ document.addEventListener("DOMContentLoaded", () => {
       date: today,
     });
 
-    // Eski kayıtları temizle (30 gün öncesini sil)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const filteredSubmissions = submissions.filter(
@@ -45,9 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   }
 
-  /**
-   * Status mesajı göster
-   */
+  
   function showStatus(message, type = "error") {
     if (!formMessage) return;
     formMessage.style.display = "block";
@@ -64,13 +57,11 @@ document.addEventListener("DOMContentLoaded", () => {
       .querySelector("textarea[name='message']")
       .value.trim();
 
-    // 1. Boş alan kontrolü
     if (!name || !email || !message) {
       showStatus("Lütfen tüm alanları doldurun!", "error");
       return;
     }
 
-    // 2. RATE LIMIT KONTROLÜ
     const todayCount = getTodaySubmissionCount();
     if (todayCount >= MAX_MESSAGES_PER_DAY) {
       showStatus(
@@ -80,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 3. Firestore'a gönder
     const contactData = {
       name,
       email,
@@ -92,7 +82,6 @@ document.addEventListener("DOMContentLoaded", () => {
     db.collection("contacts")
       .add(contactData)
       .then(() => {
-        // Başarılı olduysa localStorage'a kaydet
         recordSubmissionLocally();
         const remainingMessages = MAX_MESSAGES_PER_DAY - todayCount - 1;
 
@@ -111,3 +100,4 @@ document.addEventListener("DOMContentLoaded", () => {
       });
   });
 });
+
