@@ -12,7 +12,8 @@
       "README.md",
       ".env",
       ".env.local",
-      ".env.*.local"
+      ".env.*.local",
+      "functions/**"
     ],
     "redirects": [
       {
@@ -20,10 +21,32 @@
         "destination": "/index.html",
         "type": 200
       }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(jpg|jpeg|gif|png|svg|webp)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=86400"
+          }
+        ]
+      }
     ]
-  },
-  "functions": {
-    "source": "functions",
-    "codebase": "default"
   }
 }
