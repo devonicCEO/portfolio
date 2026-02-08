@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- GÜVENLİK: Cache Control Headers -->
+    <!-- admin sayfası cache'lenmemeli, her seferinde yeniden yüklensin -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -26,15 +26,14 @@
     <script src="https://widget.cloudinary.com/v2.0/global/all.js"></script>
 
     <script>
-        // GÜVENLİK: Cloudinary credentials environment variables'dan gelir
-        // Development: .env.example / Production: .env
-        const CLOUD_NAME = "dkrjbf599";  // Environment variable olur
-        const UPLOAD_PRESET = "portfolio"; // Environment variable olur
+        // TODO: bunları .env'e taşımak lazım, şimdilik burada duracak
+        const CLOUD_NAME = "dkrjbf599";
+        const UPLOAD_PRESET = "portfolio";
     </script>
 </head>
 
 <body>
-    <!-- GÜVENLİK: Session Manager -->
+    <!-- oturum yönetimi - 1 saat sonra otomatik çıkış -->
     <script>
         class SessionManager {
             constructor(timeoutMinutes = 60) {
@@ -42,44 +41,44 @@
                 this.inactivityTimer = null;
                 this.initialized = false;
                 this.warningTimer = null;
-                this.warningMinutes = 5; // Son 5 dakika uyarısı
+                this.warningMinutes = 5; // zaman dolmadan 5dk önce uyar ver
             }
 
             init() {
                 if (this.initialized) return;
 
-                // Activity events'ı listen et
+                // fare tıklama, klavye vs her aktivitede timerı sıfırla
                 ['mousedown', 'keydown', 'scroll', 'touchstart', 'click', 'mousemove'].forEach(
                     (event) => {
                         document.addEventListener(event, () => this.reset(), true);
                     }
                 );
 
-                // Tab kapatılırken veya gizlenirken logout
+                // sekme kapatılınca direkt logout yap
                 window.addEventListener("beforeunload", (e) => {
                     if (window.auth && window.auth.currentUser) {
-                        // localStorage'a logout işareti koy
+                        // bir flag koy ki tekrar açıldığında logout ettiğimizi bilelim
                         localStorage.setItem('admin_logout_pending', Date.now().toString());
                         auth.signOut();
                     }
                 });
 
-                // Sekme gizlendiğinde (tab switch, minimize)
+                // başka sekmeye geçince veya minimize edince
                 document.addEventListener("visibilitychange", () => {
                     if (document.hidden) {
-                        // Sekme gizlendiğinde son aktivite zamanını kaydet
+                        // sekme gizlenirken zamanı kaydet
                         localStorage.setItem('admin_last_activity', Date.now().toString());
                     } else {
-                        // Sekme tekrar görünür olduğunda kontrol et
+                        // geri dönünce ne kadar zaman geçmiş kontrol et
                         this.checkLastActivity();
                     }
                 });
 
-                // Sayfa yüklendiğinde pending logout kontrol et
+                // sayfa açılırken logout etti mi diye bak
                 const logoutPending = localStorage.getItem('admin_logout_pending');
                 if (logoutPending) {
                     const timeDiff = Date.now() - parseInt(logoutPending);
-                    // 5 saniyeden kısa sürede tekrar açıldıysa logout yapma
+                    // hemen kapatıp açtıysa (5sn içinde) logout yapma
                     if (timeDiff > 5000) {
                         localStorage.removeItem('admin_logout_pending');
                         this.forceLogout('Önceki oturum kapatıldı');
@@ -96,11 +95,11 @@
                 const lastActivity = localStorage.getItem('admin_last_activity');
                 if (lastActivity) {
                     const timeDiff = Date.now() - parseInt(lastActivity);
-                    // 1 saatten fazla geçtiyse logout
+                    // 1 saatten fazla geçtiyse zorla logout yap
                     if (timeDiff > this.timeoutMs) {
                         this.forceLogout('Uzun süre inaktif kaldınız');
                     } else {
-                        // Kalan süre için timer'ı güncelle
+                        // henüz zamanı dolmamış, timer'ı yeniden başlat
                         this.reset();
                     }
                 }
@@ -110,7 +109,7 @@
                 clearTimeout(this.inactivityTimer);
                 clearTimeout(this.warningTimer);
 
-                // Uyarı timer'ı (timeout'tan 5 dakika önce)
+                // logout olmadan 5dk önce uyarı ver
                 const warningTime = this.timeoutMs - (this.warningMinutes * 60 * 1000);
                 if (warningTime > 0) {
                     this.warningTimer = setTimeout(() => {
@@ -118,12 +117,12 @@
                     }, warningTime);
                 }
 
-                // Logout timer'ı
+                // 1 saat sonra logout yap
                 this.inactivityTimer = setTimeout(() => {
                     this.logout();
                 }, this.timeoutMs);
 
-                // Son aktivite zamanını kaydet
+                // şimdilik aktivite zamanını kaydet
                 localStorage.setItem('admin_last_activity', Date.now().toString());
             }
 
@@ -135,7 +134,7 @@
                 );
 
                 if (userConfirm) {
-                    // Kullanıcı devam etmek istiyorsa timer'ı sıfırla
+                    // ok dedi, timerı baştan başlat
                     this.reset();
                 }
             }
@@ -162,7 +161,7 @@
                 }
             }
 
-            // Manuel logout için
+            // kullanıcı kendisi logout butonuna bastıysa temizlik yap
             manualLogout() {
                 localStorage.removeItem('admin_last_activity');
                 localStorage.removeItem('admin_logout_pending');
@@ -171,7 +170,7 @@
             }
         }
 
-        // Global session manager (auth load olduktan sonra initialize edilecek)
+        // session yöneticisini 60dk olarak başlat (firebase yüklenince init edilecek)
         const sessionManager = new SessionManager(60);
     </script>
     <!-- Sidebar -->
